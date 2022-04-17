@@ -27,9 +27,12 @@ type Server struct {
 
 var allEntities []interface{} = []interface{}{
 	&entities.User{},
+
 	&entities.Problem{},
 	&entities.ProblemTest{},
+
 	&entities.Submission{},
+	&entities.SubmissionTest{},
 }
 
 func (s *Server) Serve() {
@@ -82,7 +85,9 @@ func createRepositories(db *internal.Database) *internal.Repositories {
 
 		ProblemRepository:     repositories.NewProblemRepository(db),
 		ProblemTestRepository: repositories.NewProblemTestRepository(db),
-		SubmissionRepository:  repositories.NewSubmissionRepository(db),
+
+		SubmissionRepository:     repositories.NewSubmissionRepository(db),
+		SubmissionTestRepository: repositories.NewSubmissionTestRepository(db),
 	}
 }
 
@@ -92,6 +97,8 @@ func createServices(repos *internal.Repositories, config *internal.Config) *inte
 
 		ProblemService:     services.NewProblemService(repos.ProblemRepository),
 		ProblemTestService: services.NewProblemTestService(repos.ProblemTestRepository),
-		SubmissionService:  services.NewSubmissionService(repos.SubmissionRepository),
+
+		SubmissionService:     services.NewSubmissionService(repos.SubmissionRepository),
+		SubmissionTestService: services.NewSubmissionTestService(repos.SubmissionTestRepository),
 	}
 }

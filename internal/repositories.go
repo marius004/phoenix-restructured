@@ -10,7 +10,9 @@ type Repositories struct {
 
 	ProblemRepository     ProblemRepository
 	ProblemTestRepository ProblemTestRepository
-	SubmissionRepository  SubmissionRepository
+
+	SubmissionRepository     SubmissionRepository
+	SubmissionTestRepository SubmissionTestRepository
 }
 
 type UserRepository interface {
@@ -58,4 +60,13 @@ type SubmissionRepository interface {
 	GetSubmissionByID(submissionId uint) (*entities.Submission, error)
 	GetSubmissionByUserID(userId uint) (*entities.Submission, error)
 	GetSubmissionByUsername(username string) (*entities.Submission, error)
+}
+
+type SubmissionTestRepository interface {
+	GetSubmissionTestsBySubmissionID(submissionId uint) ([]*entities.SubmissionTest, error)
+	GetSubmissionTestByID(submissionTestId uint) (*entities.SubmissionTest, error)
+	GetSubmissionTestByTestAndSubmissionID(testId, submissionId uint) (*entities.SubmissionTest, error)
+
+	CreateSubmissionTest(submissionTest *entities.SubmissionTest) error
+	UpdateSubmissionTest(testId, submissionId uint, request *models.UpdateSubmissionTestRequest) error
 }

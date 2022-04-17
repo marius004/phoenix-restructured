@@ -29,10 +29,12 @@ type Submission struct {
 	Language   ProgrammingLanguage `gorm:"default:"c++""`
 	SourceCode []byte
 
-	Status              SubmissionStatus `gorm:"default:"waiting""`
+	Status              SubmissionStatus `gorm:"default:waiting"`
 	CompilationMessage  string           `gorm:"default:"""`
 	CompiledSuccesfully *bool            `gorm:"default:"null""`
 
 	UserId    uint
 	ProblemId uint
+
+	SubmissionTests []SubmissionTest `gorm:"foreignKey:SubmissionId;references:ID";json:"-"`
 }

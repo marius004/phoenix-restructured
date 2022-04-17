@@ -50,6 +50,7 @@ func (api *API) Routes() http.Handler {
 
 		r.With(api.submissionCtx).Route("/{submissionId}", func(r chi.Router) {
 			r.Get("/", api.getSubmissionById)
+			r.Get("/tests", api.getSubmissionTests)
 		})
 	})
 

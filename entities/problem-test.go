@@ -10,4 +10,6 @@ type ProblemTest struct {
 
 	Input  []byte `gorm:"default:null"`
 	Output []byte `gorm:"default:null"`
+
+	SubmissionTests []SubmissionTest `gorm:"foreignKey:ProblemTestId;references:ID";json:"-"`
 }

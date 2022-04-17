@@ -8,9 +8,10 @@ import (
 type Services struct {
 	UserService UserService
 
-	ProblemService     ProblemService
-	ProblemTestService ProblemTestService
-	SubmissionService  SubmissionService
+	ProblemService        ProblemService
+	ProblemTestService    ProblemTestService
+	SubmissionService     SubmissionService
+	SubmissionTestService SubmissionTestService
 }
 
 type UserService interface {
@@ -57,4 +58,13 @@ type SubmissionService interface {
 	GetSubmissionByID(submissionId uint) (*entities.Submission, error)
 	GetSubmissionByUserID(userId uint) (*entities.Submission, error)
 	GetSubmissionByUsername(username string) (*entities.Submission, error)
+}
+
+type SubmissionTestService interface {
+	GetSubmissionTestsBySubmissionID(submissionId uint) ([]*entities.SubmissionTest, error)
+	GetSubmissionTestByID(submissionTestId uint) (*entities.SubmissionTest, error)
+	GetSubmissionTestByTestAndSubmissionID(testId, submissionId uint) (*entities.SubmissionTest, error)
+
+	CreateSubmissionTest(submissionTest *entities.SubmissionTest) error
+	UpdateSubmissionTest(testId, submissionId uint, request *models.UpdateSubmissionTestRequest) error
 }
