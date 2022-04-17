@@ -17,6 +17,7 @@ const (
 	userContextKey        = "user"
 	problemContextKey     = "problem"
 	problemTestContextKey = "problemTest"
+	submissionContextKey  = "submission"
 )
 
 func errorResponse(w http.ResponseWriter, err string, status int) {
@@ -84,6 +85,17 @@ func problemTestFromRequestContext(context context.Context) *entities.ProblemTes
 		return &problemTest
 	case *entities.ProblemTest:
 		return problemTest
+	default:
+		return nil
+	}
+}
+
+func submissionFromRequestContext(context context.Context) *entities.Submission {
+	switch submission := context.Value(submissionContextKey).(type) {
+	case entities.Submission:
+		return &submission
+	case *entities.Submission:
+		return submission
 	default:
 		return nil
 	}

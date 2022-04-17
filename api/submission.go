@@ -1,10 +1,12 @@
 package api
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 
 	"github.com/marius004/phoenix/entities"
+	"github.com/marius004/phoenix/internal"
 	"github.com/marius004/phoenix/models"
 )
 
@@ -18,6 +20,50 @@ func (api *API) getSubmissions(w http.ResponseWriter, r *http.Request) {
 	}
 
 	okResponse(w, submissions, http.StatusOK)
+}
+
+func (api *API) getSubmissionById(w http.ResponseWriter, r *http.Request) {
+	submission := submissionFromRequestContext(r.Context())
+	okResponse(w, submission, http.StatusOK)
+}
+
+func (api *API) createSubmission(w http.ResponseWriter, r *http.Request) {
+	user := userFromRequestContext(r.Context())
+	var data models.CreateSubmissionRequest
+
+	jsonDecoder := json.NewDecoder(r.Body)
+	jsonDecoder.DisallowUnknownFields()
+
+	if err := jsonDecoder.Decode(&data); err != nil {
+		errorResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := data.Validate(); err != nil {
+		errorResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if problem, err := api.services.ProblemService.GetProblemByID(uint(data.ProblemId)); err != nil || problem == nil {
+		errorResponse(w, internal.ErrProblemDoesNotExist.Error(), http.StatusBadRequest)
+		return
+	}
+
+	submission := &entities.Submission{}
+
+	submission.ProblemId = uint(data.ProblemId)
+	submission.UserId = user.ID
+
+	submission.SourceCode = data.SourceCode
+	submission.Language = data.Language
+	submission.Status = entities.Waiting
+
+	if err := api.services.SubmissionService.CreateSubmission(submission); err != nil {
+		errorResponse(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	emptyResponse(w, http.StatusCreated)
 }
 
 func (api *API) parseSubmissionFilter(r *http.Request) *models.SubmissionFilter {

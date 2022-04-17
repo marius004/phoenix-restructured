@@ -7,6 +7,7 @@ var (
 	ErrUserNotFound          = errors.New("user does not exist")
 
 	ErrProblemTestDoesNotExist = errors.New("problem test does not exist")
+	ErrSubmissionDoesNotExist  = errors.New("submission does not exist")
 
 	ErrEmailAlreadyExists       = errors.New("email already exists")
 	ErrProblemDoesNotExist      = errors.New("problem does not exist")

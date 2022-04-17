@@ -85,6 +85,21 @@ func (api *API) problemTestCtx(next http.Handler) http.Handler {
 	})
 }
 
+func (api *API) submissionCtx(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		id, _ := convertStringToUint(chi.URLParam(r, "submissionId"))
+		submission, err := api.services.SubmissionService.GetSubmissionByID(id)
+
+		if err != nil || submission == nil {
+			errorResponse(w, internal.ErrSubmissionDoesNotExist.Error(), http.StatusNotFound)
+			return
+		}
+
+		ctx := context.WithValue(r.Context(), submissionContextKey, submission)
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
+}
+
 func (api *API) mustBeAuthed(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if user := userFromRequestContext(r.Context()); !internal.IsUserAuthed(user) {

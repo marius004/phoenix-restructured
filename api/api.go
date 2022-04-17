@@ -46,6 +46,11 @@ func (api *API) Routes() http.Handler {
 
 	r.Route("/submissions", func(r chi.Router) {
 		r.Get("/", api.getSubmissions)
+		r.With(api.mustBeAuthed).Post("/", api.createSubmission)
+
+		r.With(api.submissionCtx).Route("/{submissionId}", func(r chi.Router) {
+			r.Get("/", api.getSubmissionById)
+		})
 	})
 
 	return r
