@@ -44,6 +44,10 @@ func (api *API) Routes() http.Handler {
 		})
 	})
 
+	r.Route("/submissions", func(r chi.Router) {
+		r.Get("/", api.getSubmissions)
+	})
+
 	return r
 }
 

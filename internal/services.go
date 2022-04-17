@@ -51,8 +51,10 @@ type ProblemTestService interface {
 type SubmissionService interface {
 	CreateSubmission(submission *entities.Submission) error
 
+	GetBySubmissionFilter(filter models.SubmissionFilter) ([]*entities.Submission, error)
+	GetAllSubmissions() ([]*entities.Submission, error)
+
 	GetSubmissionByID(submissionId uint) (*entities.Submission, error)
 	GetSubmissionByUserID(userId uint) (*entities.Submission, error)
 	GetSubmissionByUsername(username string) (*entities.Submission, error)
-	GetAllSubmissions() ([]*entities.Submission, error)
 }

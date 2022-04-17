@@ -31,7 +31,7 @@ type Submission struct {
 
 	Status              SubmissionStatus `gorm:"default:"waiting""`
 	CompilationMessage  string           `gorm:"default:"""`
-	CompiledSuccesfully bool             `gorm:"default:"true""`
+	CompiledSuccesfully *bool            `gorm:"default:"null""`
 
 	UserId    uint
 	ProblemId uint

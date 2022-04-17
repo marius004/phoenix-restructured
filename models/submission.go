@@ -7,3 +7,14 @@ type CreateSubmissionRequest struct {
 	ProblemId  uint
 	SourceCode []byte
 }
+
+type SubmissionFilter struct {
+	UserId              int
+	ProblemId           int
+	Score               int
+	Status              entities.SubmissionStatus
+	CompiledSuccesfully *bool
+
+	Limit  int
+	Offset int
+}

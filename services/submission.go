@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/marius004/phoenix/entities"
 	"github.com/marius004/phoenix/internal"
+	"github.com/marius004/phoenix/models"
 )
 
 type SubmissionService struct {
@@ -27,6 +28,10 @@ func (s *SubmissionService) GetSubmissionByUsername(username string) (*entities.
 
 func (s *SubmissionService) GetAllSubmissions() ([]*entities.Submission, error) {
 	return s.submissionRepository.GetAllSubmissions()
+}
+
+func (s *SubmissionService) GetBySubmissionFilter(filter models.SubmissionFilter) ([]*entities.Submission, error) {
+	return s.submissionRepository.GetBySubmissionFilter(filter)
 }
 
 func NewSubmissionService(submissionRepository internal.SubmissionRepository) *SubmissionService {

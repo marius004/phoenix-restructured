@@ -49,12 +49,13 @@ type ProblemTestRepository interface {
 	DeleteProblemTestsByProblemID(problemId uint) error
 }
 
-// TODO GetByFilter() :) and update submission
 type SubmissionRepository interface {
 	CreateSubmission(submission *entities.Submission) error
+
+	GetBySubmissionFilter(filter models.SubmissionFilter) ([]*entities.Submission, error)
+	GetAllSubmissions() ([]*entities.Submission, error)
 
 	GetSubmissionByID(submissionId uint) (*entities.Submission, error)
 	GetSubmissionByUserID(userId uint) (*entities.Submission, error)
 	GetSubmissionByUsername(username string) (*entities.Submission, error)
-	GetAllSubmissions() ([]*entities.Submission, error)
 }

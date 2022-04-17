@@ -2,9 +2,11 @@ package repositories
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/marius004/phoenix/entities"
 	"github.com/marius004/phoenix/internal"
+	"github.com/marius004/phoenix/models"
 	"gorm.io/gorm"
 )
 
@@ -59,6 +61,75 @@ func (r *SubmissionRepository) GetAllSubmissions() ([]*entities.Submission, erro
 	}
 
 	return submissions, result.Error
+}
+
+func (r *SubmissionRepository) GetBySubmissionFilter(filter models.SubmissionFilter) ([]*entities.Submission, error) {
+	var submissions []*entities.Submission
+	query, args := makeFilter(filter)
+
+	if len(query) == 0 {
+		return r.GetAllSubmissions()
+	}
+
+	var result *gorm.DB
+
+	if filter.Limit == -1 && filter.Offset == -1 {
+		result = r.db.Conn.Where(strings.Join(query, " AND "), args...).Find(&submissions)
+	} else if filter.Limit >= 0 && filter.Offset >= 0 {
+		result = r.db.Conn.Where(strings.Join(query, " AND "), args...).Limit(filter.Limit).Offset(filter.Offset).Find(&submissions)
+	} else if filter.Limit >= 0 {
+		result = r.db.Conn.Where(strings.Join(query, " AND "), args...).Limit(filter.Limit).Find(&submissions)
+	} else {
+		result = r.db.Conn.Where(strings.Join(query, " AND "), args...).Offset(filter.Limit).Find(&submissions)
+	}
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return submissions, result.Error
+}
+
+func makeFilter(filter models.SubmissionFilter) ([]string, []interface{}) {
+	var query []string
+	var args []interface{}
+
+	if filter.UserId > 0 {
+		query = append(query, "user_id = ?")
+		args = append(args, filter.UserId)
+	}
+
+	if filter.ProblemId > 0 {
+		query = append(query, "problem_id = ?")
+		args = append(args, filter.ProblemId)
+	}
+
+	if filter.Score > 0 {
+		query = append(query, "score = ?")
+		args = append(args, filter.Score)
+	}
+
+	if filter.Status != "" {
+		query = append(query, "status = ?")
+		args = append(args, filter.Status)
+	}
+
+	if filter.CompiledSuccesfully != nil {
+		query = append(query, "compiled_succesfully = ?")
+		args = append(args, filter.CompiledSuccesfully)
+	}
+
+	if filter.Limit > 0 {
+		query = append(query, "limit = ?")
+		args = append(args, filter.Limit)
+	}
+
+	if filter.Offset > 0 {
+		query = append(query, "offset = ?")
+		args = append(args, filter.Offset)
+	}
+
+	return query, args
 }
 
 func NewSubmissionRepository(db *internal.Database) *SubmissionRepository {
