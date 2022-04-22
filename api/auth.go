@@ -34,6 +34,11 @@ func (api *API) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if match := internal.CompareHashAndPassword(data.Password, user.Password); !match {
+		errorResponse(w, internal.ErrInvalidPassword.Error(), http.StatusBadRequest)
+		return
+	}
+
 	duration := time.Duration(api.config.CookieLifetime)
 	token, err := internal.GenerateJwtToken(api.config.JwtSecret, duration, user)
 

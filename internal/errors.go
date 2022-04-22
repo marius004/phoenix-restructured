@@ -3,6 +3,7 @@ package internal
 import "errors"
 
 var (
+	ErrInvalidPassword       = errors.New("invalid username or password")
 	ErrUsernameAlreadyExists = errors.New("username already exists")
 	ErrUserNotFound          = errors.New("user does not exist")
 
