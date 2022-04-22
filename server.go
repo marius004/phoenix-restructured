@@ -16,8 +16,9 @@ import (
 )
 
 type Server struct {
-	db     *internal.Database
-	config *internal.Config
+	db         *internal.Database
+	config     *internal.Config
+	evalConfig *internal.EvalConfig
 
 	repositories *internal.Repositories
 	services     *internal.Services
@@ -36,7 +37,7 @@ var allEntities []interface{} = []interface{}{
 }
 
 func (s *Server) Serve() {
-	var api = api.NewAPI(s.config, s.services)
+	var api = api.NewAPI(s.config, s.services, s.evalConfig)
 	s.db.AutoMigrate(allEntities...)
 
 	r := chi.NewRouter()
@@ -63,19 +64,17 @@ func (s *Server) Serve() {
 	}
 }
 
-func NewServer(db *internal.Database, config *internal.Config,
-	logger *log.Logger) *Server {
+func NewServer(db *internal.Database, config *internal.Config, evalConfig *internal.EvalConfig) *Server {
 
 	repositories := createRepositories(db)
 
 	return &Server{
-		config: config,
-		db:     db,
+		db:         db,
+		config:     config,
+		evalConfig: evalConfig,
 
 		repositories: repositories,
 		services:     createServices(repositories, config),
-
-		logger: logger,
 	}
 }
 

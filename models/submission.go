@@ -6,10 +6,13 @@ import (
 )
 
 var (
-	submissionLanguageValidation   = []validation.Rule{validation.Required, validation.In(entities.CPP)}
+	submissionLanguageValidation   = []validation.Rule{validation.Required, validation.In(entities.C)}
 	submissionProblemIdValidation  = []validation.Rule{validation.Required, validation.Min(0)}
 	submissionSourceCodeValidation = []validation.Rule{validation.Required, validation.Length(1, 0)}
 )
+
+var CompilationSuccess = true
+var CompilationFailure = false
 
 type CreateSubmissionRequest struct {
 	Language   entities.ProgrammingLanguage
@@ -34,4 +37,12 @@ type SubmissionFilter struct {
 
 	Limit  int
 	Offset int
+}
+
+type UpdateSubmissionRequest struct {
+	Score  int
+	Status entities.SubmissionStatus
+
+	Message             string
+	CompiledSuccesfully *bool
 }

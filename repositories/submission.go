@@ -90,6 +90,22 @@ func (r *SubmissionRepository) GetBySubmissionFilter(filter models.SubmissionFil
 	return submissions, result.Error
 }
 
+func (r *SubmissionRepository) UpdateSubmission(submissionId uint, request *models.UpdateSubmissionRequest) error {
+	submission, err := r.GetSubmissionByID(submissionId)
+
+	if err != nil {
+		return internal.ErrSubmissionDoesNotExist
+	}
+
+	submission.Score = request.Score
+	submission.Status = request.Status
+	submission.Message = request.Message
+	submission.CompiledSuccesfully = request.CompiledSuccesfully
+
+	result := r.db.Conn.Save(&submission)
+	return result.Error
+}
+
 func makeFilter(filter models.SubmissionFilter) ([]string, []interface{}) {
 	var query []string
 	var args []interface{}

@@ -34,6 +34,10 @@ func (s *SubmissionService) GetBySubmissionFilter(filter models.SubmissionFilter
 	return s.submissionRepository.GetBySubmissionFilter(filter)
 }
 
+func (s *SubmissionService) UpdateSubmission(submissionId uint, request *models.UpdateSubmissionRequest) error {
+	return s.submissionRepository.UpdateSubmission(submissionId, request)
+}
+
 func NewSubmissionService(submissionRepository internal.SubmissionRepository) *SubmissionService {
 	return &SubmissionService{submissionRepository}
 }

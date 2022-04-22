@@ -18,9 +18,9 @@ func (status SubmissionStatus) IsEvaluated() bool  { return status == Evaluated 
 // Programming Language
 type ProgrammingLanguage string
 
-const CPP = ProgrammingLanguage("c++")
+const C = ProgrammingLanguage("c")
 
-func (lang ProgrammingLanguage) IsCPP() bool { return lang == CPP }
+func (lang ProgrammingLanguage) IsC() bool { return lang == C }
 
 type Submission struct {
 	gorm.Model
@@ -30,8 +30,10 @@ type Submission struct {
 	SourceCode []byte
 
 	Status              SubmissionStatus `gorm:"default:waiting"`
-	CompilationMessage  string           `gorm:"default:"""`
 	CompiledSuccesfully *bool            `gorm:"default:"null""`
+
+	Message            string `gorm:"default:"""`
+	CompilationMessage string
 
 	UserId    uint
 	ProblemId uint

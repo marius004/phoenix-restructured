@@ -22,4 +22,6 @@ var (
 
 	ErrMustBeAdmin    = errors.New("you must have admin role to do this action")
 	ErrMustBeProposer = errors.New("you must have proposer role to do this action")
+
+	ErrLangNotFound = errors.New("we currently do not provide the specified language")
 )

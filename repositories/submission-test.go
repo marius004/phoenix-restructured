@@ -37,7 +37,7 @@ func (r *SubmissionTestRepository) GetSubmissionTestByID(submissionTestId uint) 
 
 func (r *SubmissionTestRepository) GetSubmissionTestByTestAndSubmissionID(testId, submissionId uint) (*entities.SubmissionTest, error) {
 	var submissionTest *entities.SubmissionTest
-	result := r.db.Conn.Where("submission_id = ? AND test_id = ?", submissionId, testId).First(&submissionTest)
+	result := r.db.Conn.Where("submission_id = ? AND problem_test_id = ?", submissionId, testId).First(&submissionTest)
 
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, nil

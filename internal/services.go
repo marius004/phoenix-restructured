@@ -58,6 +58,8 @@ type SubmissionService interface {
 	GetSubmissionByID(submissionId uint) (*entities.Submission, error)
 	GetSubmissionByUserID(userId uint) (*entities.Submission, error)
 	GetSubmissionByUsername(username string) (*entities.Submission, error)
+
+	UpdateSubmission(submissionId uint, request *models.UpdateSubmissionRequest) error
 }
 
 type SubmissionTestService interface {
