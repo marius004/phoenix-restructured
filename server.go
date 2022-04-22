@@ -22,8 +22,6 @@ type Server struct {
 
 	repositories *internal.Repositories
 	services     *internal.Services
-
-	logger *log.Logger
 }
 
 var allEntities []interface{} = []interface{}{
