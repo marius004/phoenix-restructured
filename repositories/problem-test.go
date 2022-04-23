@@ -58,12 +58,12 @@ func (r *ProblemTestRepository) UpdateProblemTestByID(testId uint, request *mode
 }
 
 func (r *ProblemTestRepository) DeleteProblemTestByID(testId uint) error {
-	result := r.db.Conn.Delete(&entities.ProblemTest{}, testId)
+	result := r.db.Conn.Unscoped().Where("id = ?", testId).Delete(&entities.ProblemTest{})
 	return result.Error
 }
 
 func (r *ProblemTestRepository) DeleteProblemTestsByProblemID(problemId uint) error {
-	result := r.db.Conn.Where("problem_id = ?", problemId).Delete(&entities.ProblemTest{})
+	result := r.db.Conn.Unscoped().Where("problem_id = ?", problemId).Delete(&entities.ProblemTest{})
 	return result.Error
 }
 

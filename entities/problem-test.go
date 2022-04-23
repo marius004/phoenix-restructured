@@ -11,5 +11,7 @@ type ProblemTest struct {
 	Input  []byte `gorm:"default:null"`
 	Output []byte `gorm:"default:null"`
 
-	SubmissionTests []SubmissionTest `gorm:"foreignKey:ProblemTestId;references:ID";json:"-"`
+	SubmissionTests []SubmissionTest `gorm:"foreignKey:ProblemTestId;constraint:OnDelete:CASCADE;references:ID";json:"-"`
 }
+
+// TODO check for batch delete https://gorm.io/docs/delete.html

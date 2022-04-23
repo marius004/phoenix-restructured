@@ -22,6 +22,6 @@ type User struct {
 
 	UserIconURL string
 
-	Problems    []Problem    `gorm:"foreignKey:AuthorId;references:ID";json:"-"`
-	Submissions []Submission `gorm:"foreignKey:UserId;references:ID";json:"-"`
+	Problems    []Problem    `gorm:"foreignKey:AuthorId;references:ID;constraint:OnDelete:CASCADE;";json:"-"`
+	Submissions []Submission `gorm:"foreignKey:UserId;references:ID;constraint:OnDelete:CASCADE;";json:"-"`
 }

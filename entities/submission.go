@@ -38,5 +38,5 @@ type Submission struct {
 	UserId    uint
 	ProblemId uint
 
-	SubmissionTests []SubmissionTest `gorm:"foreignKey:SubmissionId;references:ID";json:"-"`
+	SubmissionTests []SubmissionTest `gorm:"foreignKey:SubmissionId;references:ID;constraint:OnDelete:CASCADE";json:"-"`
 }

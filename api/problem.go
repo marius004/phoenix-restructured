@@ -81,6 +81,16 @@ func (api *API) updateProblemByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !api.canManageProblem(problem, user) {
+		emptyResponse(w, http.StatusUnauthorized)
+		return
+	}
+
+	if err := data.Validate(); err != nil {
+		errorResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	err := api.services.ProblemService.UpdateProblemByID(problem.ID, user, data)
 	if errors.Is(err, internal.ErrUnauthorized) {
 		errorResponse(w, err.Error(), http.StatusUnauthorized)
@@ -89,6 +99,23 @@ func (api *API) updateProblemByID(w http.ResponseWriter, r *http.Request) {
 
 	if errors.Is(err, internal.ErrProblemDoesNotExist) {
 		errorResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	emptyResponse(w, http.StatusOK)
+}
+
+func (api *API) deleteProblem(w http.ResponseWriter, r *http.Request) {
+	problem := problemFromRequestContext(r.Context())
+	user := userFromRequestContext(r.Context())
+
+	if !api.canManageProblem(problem, user) {
+		emptyResponse(w, http.StatusUnauthorized)
+		return
+	}
+
+	if err := api.services.ProblemService.DeleteProblem(problem); err != nil {
+		errorResponse(w, internal.ErrCouldNotDeleteProblem.Error(), http.StatusInternalServerError)
 		return
 	}
 

@@ -3,6 +3,8 @@ package internal
 import "errors"
 
 var (
+	ErrCouldNotDeleteProblem = errors.New("could not delete problem")
+
 	ErrInvalidPassword       = errors.New("invalid username or password")
 	ErrUsernameAlreadyExists = errors.New("username already exists")
 	ErrUserNotFound          = errors.New("user does not exist")

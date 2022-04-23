@@ -58,7 +58,7 @@ func (r *UserRepository) GetUserByUsername(username string) (*entities.User, err
 }
 
 func (r *UserRepository) DeleteUser(user *entities.User) error {
-	result := r.db.Conn.Delete(&user)
+	result := r.db.Conn.Unscoped().Delete(&user)
 	return result.Error
 }
 

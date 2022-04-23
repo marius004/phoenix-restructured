@@ -35,6 +35,7 @@ func (api *API) Routes() http.Handler {
 		r.With(api.problemCtx).Route("/{problemId}", func(r chi.Router) {
 			r.Get("/", api.getProblemByID)
 			r.With(api.mustBeProposer).Put("/", api.updateProblemByID)
+			r.With(api.mustBeProposer).Delete("/", api.deleteProblem)
 
 			r.Route("/tests", func(r chi.Router) {
 				r.With(api.mustBeProposer).Get("/", api.getProblemTests)

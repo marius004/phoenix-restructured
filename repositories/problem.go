@@ -52,7 +52,7 @@ func (r *ProblemRepository) GetProblemsByAuthorID(authorId uint) ([]*entities.Pr
 }
 
 func (r *ProblemRepository) DeleteProblem(problem *entities.Problem) error {
-	result := r.db.Conn.Delete(&problem)
+	result := r.db.Conn.Unscoped().Delete(&entities.Problem{}, "id = ?", problem.ID)
 	return result.Error
 }
 
@@ -77,6 +77,10 @@ func (r *ProblemRepository) UpdateProblemByID(id uint, request *models.UpdatePro
 
 	if request.TimeLimit > 0 {
 		problem.TimeLimit = request.TimeLimit
+	}
+
+	if problem.Difficulty != "" {
+		problem.Difficulty = request.Difficulty
 	}
 
 	r.db.Conn.Save(&problem)
