@@ -35,9 +35,9 @@ func (r *SubmissionTestRepository) GetSubmissionTestByID(submissionTestId uint) 
 	return submissionTest, result.Error
 }
 
-func (r *SubmissionTestRepository) GetSubmissionTestByTestAndSubmissionID(testId, submissionId uint) (*entities.SubmissionTest, error) {
+func (r *SubmissionTestRepository) GetSubmissionTestByProblemTestAndSubmissionID(problemTestId, submissionId uint) (*entities.SubmissionTest, error) {
 	var submissionTest *entities.SubmissionTest
-	result := r.db.Conn.Where("submission_id = ? AND problem_test_id = ?", submissionId, testId).First(&submissionTest)
+	result := r.db.Conn.Where("submission_id = ? AND problem_test_id = ?", submissionId, problemTestId).First(&submissionTest)
 
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, nil
@@ -52,7 +52,7 @@ func (r *SubmissionTestRepository) CreateSubmissionTest(submissionTest *entities
 }
 
 func (r *SubmissionTestRepository) UpdateSubmissionTest(testId, submissionId uint, request *models.UpdateSubmissionTestRequest) error {
-	submissionTest, err := r.GetSubmissionTestByTestAndSubmissionID(testId, submissionId)
+	submissionTest, err := r.GetSubmissionTestByProblemTestAndSubmissionID(testId, submissionId)
 
 	if err != nil || submissionTest == nil {
 		return internal.ErrSubmissionTestDoesNotExist

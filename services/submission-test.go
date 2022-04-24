@@ -19,7 +19,7 @@ func (s *SubmissionTestService) GetSubmissionTestByID(submissionTestId uint) (*e
 }
 
 func (s *SubmissionTestService) GetSubmissionTestByTestAndSubmissionID(testId, submissionId uint) (*entities.SubmissionTest, error) {
-	return s.submissionTestRepository.GetSubmissionTestByTestAndSubmissionID(testId, submissionId)
+	return s.submissionTestRepository.GetSubmissionTestByProblemTestAndSubmissionID(testId, submissionId)
 }
 
 func (s *SubmissionTestService) CreateSubmissionTest(submissionTest *entities.SubmissionTest) error {

@@ -138,10 +138,12 @@ func (c *Checker) Check(submission *entities.Submission) error {
 			ExecutionMessage: message,
 		}
 
-		if err := c.services.SubmissionTestService.UpdateSubmissionTest(problemTest.ProblemId, submission.ID, updateSubmissionTest); err != nil {
+		if err := c.services.SubmissionTestService.UpdateSubmissionTest(problemTest.ID, submission.ID, updateSubmissionTest); err != nil {
 			logger.Println(err)
 		}
 	}
+
+	logger.Println("TOTAL SCORE", totalScore)
 
 	updateSubmissionRequest := &models.UpdateSubmissionRequest{
 		Score:  totalScore,

@@ -20,7 +20,7 @@ func (api *API) Routes() http.Handler {
 	r := chi.NewRouter()
 
 	r.Use(api.jwtMiddleware)
-	go api.grader.Handle() // no bugs pls :)
+	go api.grader.Handle()
 
 	r.Route("/auth", func(r chi.Router) {
 		r.With(api.mustNotBeAuthed).Post("/register", api.register)

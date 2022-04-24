@@ -67,7 +67,7 @@ type SubmissionRepository interface {
 type SubmissionTestRepository interface {
 	GetSubmissionTestsBySubmissionID(submissionId uint) ([]*entities.SubmissionTest, error)
 	GetSubmissionTestByID(submissionTestId uint) (*entities.SubmissionTest, error)
-	GetSubmissionTestByTestAndSubmissionID(testId, submissionId uint) (*entities.SubmissionTest, error)
+	GetSubmissionTestByProblemTestAndSubmissionID(problemTestId, submissionId uint) (*entities.SubmissionTest, error)
 
 	CreateSubmissionTest(submissionTest *entities.SubmissionTest) error
 	UpdateSubmissionTest(testId, submissionId uint, request *models.UpdateSubmissionTestRequest) error

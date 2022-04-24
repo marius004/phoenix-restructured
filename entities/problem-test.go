@@ -13,5 +13,3 @@ type ProblemTest struct {
 
 	SubmissionTests []SubmissionTest `gorm:"foreignKey:ProblemTestId;constraint:OnDelete:CASCADE;references:ID";json:"-"`
 }
-
-// TODO check for batch delete https://gorm.io/docs/delete.html

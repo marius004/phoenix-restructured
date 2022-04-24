@@ -1,7 +1,6 @@
 package grader
 
 import (
-	"fmt"
 	"os"
 	"sync"
 	"time"
@@ -59,13 +58,13 @@ func (g *Grader) handleSubmission(submission *entities.Submission) {
 	}
 
 	if !g.executeSubmission(submission) {
-		fmt.Printf("Could not execute submission %d\n", submission.ID)
+		logger.Printf("Could not execute submission %d\n", submission.ID)
 		return
 	}
 
 	checker := g.getAppropriateChecker()
 	if err := checker.Check(submission); err != nil {
-		fmt.Printf("Could not check the submission %d\n", submission.ID)
+		logger.Printf("Could not check the submission %d\n", submission.ID)
 		return
 	}
 }
@@ -140,7 +139,6 @@ func (g *Grader) executeSubmission(submission *entities.Submission) bool {
 
 		go func(problemTest entities.ProblemTest) {
 			defer wg.Done()
-			defer fmt.Println(problemTest)
 
 			execute := g.executeProblemTest(submission, problem, &problemTest)
 
@@ -167,7 +165,7 @@ func (g *Grader) executeSubmission(submission *entities.Submission) bool {
 				ExitCode:         execute.Response.ExitCode,
 
 				SubmissionId:  submission.ID,
-				ProblemTestId: problemTest.ProblemId,
+				ProblemTestId: problemTest.ID,
 			}
 
 			if err := g.createSubmissionTest(submissionTest); err != nil {
