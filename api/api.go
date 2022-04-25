@@ -37,9 +37,9 @@ func (api *API) Routes() http.Handler {
 		r.Get("/", api.getProblems)
 		r.With(api.mustBeProposer).Post("/", api.createProblem)
 
-		r.With(api.problemCtx).Route("/{problemId}", func(r chi.Router) {
-			r.Get("/", api.getProblemByID)
-			r.With(api.mustBeProposer).Put("/", api.updateProblemByID)
+		r.With(api.problemCtx).Route("/{probleName}", func(r chi.Router) {
+			r.Get("/", api.getProblemByName)
+			r.With(api.mustBeProposer).Put("/", api.updateProblemByName)
 			r.With(api.mustBeProposer).Delete("/", api.deleteProblem)
 
 			r.Route("/tests", func(r chi.Router) {

@@ -57,8 +57,8 @@ func (api *API) jwtMiddleware(next http.Handler) http.Handler {
 
 func (api *API) problemCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id, _ := convertStringToUint(chi.URLParam(r, "problemId"))
-		problem, err := api.services.ProblemService.GetProblemByID(id)
+		name := chi.URLParam(r, "problemName")
+		problem, err := api.services.ProblemService.GetProblemByName(name)
 
 		if err != nil || problem == nil {
 			errorResponse(w, internal.ErrProblemDoesNotExist.Error(), http.StatusNotFound)

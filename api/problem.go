@@ -25,7 +25,7 @@ func (api *API) getProblems(w http.ResponseWriter, r *http.Request) {
 	okResponse(w, problems, http.StatusOK)
 }
 
-func (api *API) getProblemByID(w http.ResponseWriter, r *http.Request) {
+func (api *API) getProblemByName(w http.ResponseWriter, r *http.Request) {
 	problem := problemFromRequestContext(r.Context())
 
 	if problem == nil {
@@ -67,7 +67,7 @@ func (api *API) createProblem(w http.ResponseWriter, r *http.Request) {
 	emptyResponse(w, http.StatusCreated)
 }
 
-func (api *API) updateProblemByID(w http.ResponseWriter, r *http.Request) {
+func (api *API) updateProblemByName(w http.ResponseWriter, r *http.Request) {
 	problem := problemFromRequestContext(r.Context())
 	user := userFromRequestContext(r.Context())
 
