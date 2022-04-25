@@ -13,7 +13,7 @@ type User struct {
 	Bio      string
 
 	LinkedInURL string
-	FacebookURL string
+	GithubURL   string
 	WebsiteURL  string
 
 	IsAdmin    bool `gorm:"default:false;"`

@@ -5,6 +5,7 @@ import (
 
 	"github.com/marius004/phoenix/entities"
 	"github.com/marius004/phoenix/internal"
+	"github.com/marius004/phoenix/models"
 	"gorm.io/gorm"
 )
 
@@ -55,6 +56,31 @@ func (r *UserRepository) GetUserByUsername(username string) (*entities.User, err
 	}
 
 	return user, result.Error
+}
+
+func (r *UserRepository) UpdateUser(user *entities.User, request *models.UpdateUserRequest) error {
+	if request.Bio != "" {
+		user.Bio = request.Bio
+	}
+
+	if request.GithubURL != "" {
+		user.GithubURL = request.GithubURL
+	}
+
+	if request.LinkedInURL != "" {
+		user.LinkedInURL = request.LinkedInURL
+	}
+
+	if request.WebsiteURL != "" {
+		user.WebsiteURL = request.WebsiteURL
+	}
+
+	if request.UserIconURL != "" {
+		user.UserIconURL = request.UserIconURL
+	}
+
+	result := r.db.Conn.Save(&user)
+	return result.Error
 }
 
 func (r *UserRepository) DeleteUser(user *entities.User) error {

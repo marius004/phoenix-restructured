@@ -67,6 +67,10 @@ func (r *ProblemRepository) UpdateProblemByID(id uint, request *models.UpdatePro
 		return internal.ErrProblemDoesNotExist
 	}
 
+	if request.Description != "" {
+		problem.Description = request.Description
+	}
+
 	if request.MemoryLimit > 0 {
 		problem.MemoryLimit = request.MemoryLimit
 	}
@@ -83,8 +87,8 @@ func (r *ProblemRepository) UpdateProblemByID(id uint, request *models.UpdatePro
 		problem.Difficulty = request.Difficulty
 	}
 
-	r.db.Conn.Save(&problem)
-	return nil
+	result := r.db.Conn.Save(&problem)
+	return result.Error
 }
 
 func (r *ProblemRepository) GetProblemsByFilter(filter *models.ProblemFilter) ([]*entities.Problem, error) {

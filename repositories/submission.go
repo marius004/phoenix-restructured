@@ -54,7 +54,7 @@ func (r *SubmissionRepository) GetSubmissionByUsername(username string) (*entiti
 
 func (r *SubmissionRepository) GetAllSubmissions() ([]*entities.Submission, error) {
 	var submissions []*entities.Submission
-	result := r.db.Conn.Find(&submissions)
+	result := r.db.Conn.Order("id desc").Find(&submissions)
 
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, nil

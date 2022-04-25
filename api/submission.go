@@ -63,7 +63,7 @@ func (api *API) createSubmission(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	emptyResponse(w, http.StatusCreated)
+	okResponse(w, submission, http.StatusCreated)
 }
 
 func (api *API) parseSubmissionFilter(r *http.Request) *models.SubmissionFilter {

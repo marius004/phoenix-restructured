@@ -21,6 +21,8 @@ type UserService interface {
 	GetUserByEmail(email string) (*entities.User, error)
 	GetUserByUsername(username string) (*entities.User, error)
 
+	UpdateUser(user *entities.User, request *models.UpdateUserRequest) error
+
 	DeleteUser(user *entities.User) error
 }
 

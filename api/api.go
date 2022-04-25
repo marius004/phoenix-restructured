@@ -28,6 +28,11 @@ func (api *API) Routes() http.Handler {
 		r.With(api.mustBeAuthed).Post("/logout", api.logout)
 	})
 
+	r.Route("/users", func(r chi.Router) {
+		r.Get("/{username}", api.getUserByUsername)
+		r.With(api.mustBeAuthed).Put("/", api.updateUser)
+	})
+
 	r.Route("/problems", func(r chi.Router) {
 		r.Get("/", api.getProblems)
 		r.With(api.mustBeProposer).Post("/", api.createProblem)

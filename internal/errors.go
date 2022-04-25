@@ -4,6 +4,7 @@ import "errors"
 
 var (
 	ErrCouldNotDeleteProblem = errors.New("could not delete problem")
+	ErrCouldNotUpdateUser    = errors.New("could not update user data")
 
 	ErrInvalidPassword       = errors.New("invalid username or password")
 	ErrUsernameAlreadyExists = errors.New("username already exists")

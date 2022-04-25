@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/marius004/phoenix/entities"
 	"github.com/marius004/phoenix/internal"
+	"github.com/marius004/phoenix/models"
 )
 
 type UserService struct {
@@ -32,6 +33,10 @@ func (s *UserService) GetUserByEmail(email string) (*entities.User, error) {
 
 func (s *UserService) GetUserByUsername(username string) (*entities.User, error) {
 	return s.userRepository.GetUserByUsername(username)
+}
+
+func (s *UserService) UpdateUser(user *entities.User, request *models.UpdateUserRequest) error {
+	return s.userRepository.UpdateUser(user, request)
 }
 
 func (s *UserService) DeleteUser(user *entities.User) error {
