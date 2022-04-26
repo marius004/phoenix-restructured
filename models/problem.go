@@ -21,8 +21,11 @@ var (
 )
 
 type ProblemFilter struct {
-	AuthorId uint
-	Limit    uint
+	AuthorId  uint
+	ProblemId uint
+
+	Limit  int
+	Offset int
 }
 
 type CreateProblemRequest struct {

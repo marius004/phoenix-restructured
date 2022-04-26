@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/marius004/phoenix/entities"
 	"github.com/marius004/phoenix/internal"
@@ -93,19 +94,39 @@ func (r *ProblemRepository) UpdateProblemByID(id uint, request *models.UpdatePro
 
 func (r *ProblemRepository) GetProblemsByFilter(filter *models.ProblemFilter) ([]*entities.Problem, error) {
 	var problems []*entities.Problem
+	query, args := makeProblemFilter(filter)
+
 	var result *gorm.DB
 
-	if filter.Limit > 0 && filter.AuthorId > 0 {
-		result = r.db.Conn.Where("author_id = ?", filter.AuthorId).Find(&problems).Limit(int(filter.Limit))
+	if filter.Limit > 0 && filter.Offset > 0 {
+		result = r.db.Conn.Where(strings.Join(query, " AND "), args...).Offset(filter.Offset).Limit(filter.Limit).Find(&problems)
 	} else if filter.Limit > 0 {
-		result = r.db.Conn.Find(&problems).Limit(int(filter.Limit))
-	} else if filter.AuthorId > 0 {
-		result = r.db.Conn.Where("author_id = ?", filter.AuthorId).Find(&problems)
+		result = r.db.Conn.Where(strings.Join(query, " AND "), args...).Limit(filter.Limit).Find(&problems)
+	} else if filter.Offset > 0 {
+		result = r.db.Conn.Where(strings.Join(query, " AND "), args...).Offset(filter.Offset).Find(&problems)
 	} else {
-		result = r.db.Conn.Find(&problems)
+		result = r.db.Conn.Where(strings.Join(query, " AND "), args...).Find(&problems)
+	}
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, nil
 	}
 
 	return problems, result.Error
+}
+
+func makeProblemFilter(filter *models.ProblemFilter) (query []string, args []interface{}) {
+	if filter.AuthorId > 0 {
+		query = append(query, "author_id = ?")
+		args = append(args, filter.AuthorId)
+	}
+
+	if filter.ProblemId > 0 {
+		query = append(query, "id = ?")
+		args = append(args, filter.ProblemId)
+	}
+
+	return
 }
 
 func NewProblemRepository(db *internal.Database) *ProblemRepository {

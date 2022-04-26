@@ -65,7 +65,7 @@ func (r *SubmissionRepository) GetAllSubmissions() ([]*entities.Submission, erro
 
 func (r *SubmissionRepository) GetBySubmissionFilter(filter models.SubmissionFilter) ([]*entities.Submission, error) {
 	var submissions []*entities.Submission
-	query, args := makeFilter(filter)
+	query, args := makeSubmissionFilter(filter)
 
 	if len(query) == 0 {
 		return r.GetAllSubmissions()
@@ -106,7 +106,7 @@ func (r *SubmissionRepository) UpdateSubmission(submissionId uint, request *mode
 	return result.Error
 }
 
-func makeFilter(filter models.SubmissionFilter) ([]string, []interface{}) {
+func makeSubmissionFilter(filter models.SubmissionFilter) ([]string, []interface{}) {
 	var query []string
 	var args []interface{}
 

@@ -129,8 +129,12 @@ func (api *API) parseProblemFilter(url *url.URL) *models.ProblemFilter {
 		ret.AuthorId = parseStringToUnsignedInt(v[0])
 	}
 
+	if v, ok := url.Query()["problemId"]; ok {
+		ret.ProblemId = parseStringToUnsignedInt(v[0])
+	}
+
 	if v, ok := url.Query()["limit"]; ok {
-		ret.Limit = parseStringToUnsignedInt(v[0])
+		ret.Limit = int(parseStringToUnsignedInt(v[0]))
 
 		if ret.Limit > 30 {
 			ret.Limit = 30
