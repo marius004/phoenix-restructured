@@ -20,6 +20,7 @@ type UserService interface {
 	GetUserByID(id uint) (*entities.User, error)
 	GetUserByEmail(email string) (*entities.User, error)
 	GetUserByUsername(username string) (*entities.User, error)
+	GetUsers(filter *models.UserFilter) ([]*entities.User, error)
 
 	UpdateUser(user *entities.User, request *models.UpdateUserRequest) error
 

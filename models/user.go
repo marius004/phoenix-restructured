@@ -19,3 +19,20 @@ func (data UpdateUserRequest) Validate() error {
 		validation.Field(&data.Bio, bioValidation...),
 	)
 }
+
+type UserFilter struct {
+	UserId   int
+	Username string
+	Email    string
+
+	LinkedInURL string
+	GithubURL   string
+	WebsiteURL  string
+	UserIconURL string
+
+	IsAdmin    *bool
+	IsProposer *bool
+
+	Limit  int
+	Offset int
+}

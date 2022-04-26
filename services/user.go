@@ -35,6 +35,10 @@ func (s *UserService) GetUserByUsername(username string) (*entities.User, error)
 	return s.userRepository.GetUserByUsername(username)
 }
 
+func (s *UserService) GetUsers(filter *models.UserFilter) ([]*entities.User, error) {
+	return s.userRepository.GetUsers(filter)
+}
+
 func (s *UserService) UpdateUser(user *entities.User, request *models.UpdateUserRequest) error {
 	return s.userRepository.UpdateUser(user, request)
 }

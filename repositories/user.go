@@ -2,6 +2,8 @@ package repositories
 
 import (
 	"errors"
+	"fmt"
+	"strings"
 
 	"github.com/marius004/phoenix/entities"
 	"github.com/marius004/phoenix/internal"
@@ -58,6 +60,25 @@ func (r *UserRepository) GetUserByUsername(username string) (*entities.User, err
 	return user, result.Error
 }
 
+func (r *UserRepository) GetUsers(filter *models.UserFilter) ([]*entities.User, error) {
+	var users []*entities.User
+	query, args := makeUserFilter(filter)
+
+	var result *gorm.DB
+
+	if filter.Limit > 0 && filter.Offset > 0 {
+		result = r.db.Conn.Where(strings.Join(query, " AND "), args...).Offset(filter.Offset).Limit(filter.Limit).Find(&users)
+	} else if filter.Limit > 0 {
+		result = r.db.Conn.Where(strings.Join(query, " AND "), args...).Limit(filter.Limit).Find(&users)
+	} else if filter.Offset > 0 {
+		result = r.db.Conn.Where(strings.Join(query, " AND "), args...).Offset(filter.Offset).Find(&users)
+	} else {
+		result = r.db.Conn.Where(strings.Join(query, " AND "), args...).Find(&users)
+	}
+
+	return users, result.Error
+}
+
 func (r *UserRepository) UpdateUser(user *entities.User, request *models.UpdateUserRequest) error {
 	if request.Bio != "" {
 		user.Bio = request.Bio
@@ -86,6 +107,56 @@ func (r *UserRepository) UpdateUser(user *entities.User, request *models.UpdateU
 func (r *UserRepository) DeleteUser(user *entities.User) error {
 	result := r.db.Conn.Unscoped().Delete(&user)
 	return result.Error
+}
+
+func makeUserFilter(filter *models.UserFilter) (query []string, args []interface{}) {
+	if filter.Email != "" {
+		query = append(query, "email = ?")
+		args = append(args, filter.Email)
+	}
+
+	if filter.GithubURL != "" {
+		fmt.Println(filter.GithubURL)
+		query = append(query, "github_url = ?")
+		args = append(args, filter.GithubURL)
+	}
+
+	if filter.LinkedInURL != "" {
+		query = append(query, "linked_in_url = ?")
+		args = append(args, filter.LinkedInURL)
+	}
+
+	if filter.UserIconURL != "" {
+		query = append(query, "user_icon_url = ?")
+		args = append(args, filter.UserIconURL)
+	}
+
+	if filter.Username != "" {
+		query = append(query, "username = ?")
+		args = append(args, filter.Username)
+	}
+
+	if filter.WebsiteURL != "" {
+		query = append(query, "website_url = ?")
+		args = append(args, filter.WebsiteURL)
+	}
+
+	if filter.IsAdmin != nil {
+		query = append(query, "is_admin = ?")
+		args = append(args, filter.IsAdmin)
+	}
+
+	if filter.IsProposer != nil {
+		query = append(query, "is_proposer = ?")
+		args = append(args, filter.IsProposer)
+	}
+
+	if filter.UserId > 0 {
+		query = append(query, "id = ?")
+		args = append(args, filter.UserId)
+	}
+
+	return
 }
 
 func NewUserRepository(db *internal.Database) *UserRepository {
