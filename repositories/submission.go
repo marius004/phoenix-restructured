@@ -67,13 +67,9 @@ func (r *SubmissionRepository) GetBySubmissionFilter(filter models.SubmissionFil
 	var submissions []*entities.Submission
 	query, args := makeSubmissionFilter(filter)
 
-	if len(query) == 0 {
-		return r.GetAllSubmissions()
-	}
-
 	var result *gorm.DB
 
-	if filter.Limit == -1 && filter.Offset == -1 {
+	if filter.Limit <= 0 && filter.Offset <= 0 {
 		result = r.db.Conn.Order("id desc").Where(strings.Join(query, " AND "), args...).Find(&submissions)
 	} else if filter.Limit >= 0 && filter.Offset >= 0 {
 		result = r.db.Conn.Order("id desc").Where(strings.Join(query, " AND "), args...).Offset(filter.Offset).Limit(filter.Limit).Find(&submissions)
