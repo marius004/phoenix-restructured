@@ -20,7 +20,7 @@ type User struct {
 	IsProposer bool `gorm:"default:false"`
 	IsBanned   bool `gorm:"default:false"`
 
-	UserIconURL string
+	UserIconURL string `gorm:"default:http://www.gravatar.com/avatar/?d=mp"`
 
 	Problems    []Problem    `gorm:"foreignKey:AuthorId;references:ID;constraint:OnDelete:CASCADE;";json:"-"`
 	Submissions []Submission `gorm:"foreignKey:UserId;references:ID;constraint:OnDelete:CASCADE;";json:"-"`
