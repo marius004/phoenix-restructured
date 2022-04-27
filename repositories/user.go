@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/marius004/phoenix/entities"
@@ -116,7 +115,6 @@ func makeUserFilter(filter *models.UserFilter) (query []string, args []interface
 	}
 
 	if filter.GithubURL != "" {
-		fmt.Println(filter.GithubURL)
 		query = append(query, "github_url = ?")
 		args = append(args, filter.GithubURL)
 	}

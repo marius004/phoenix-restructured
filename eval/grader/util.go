@@ -10,6 +10,14 @@ import (
 var (
 	ctx = context.Background()
 
-	waitingSubmissions   = models.SubmissionFilter{Status: entities.Waiting}
-	evaluatingSubmission = models.UpdateSubmissionRequest{Status: entities.Evaluating}
+	waitingSubmissions = models.SubmissionFilter{
+		UserId:              -1,
+		ProblemId:           -1,
+		Score:               -1,
+		CompiledSuccesfully: nil,
+		Status:              entities.Waiting,
+	}
+	evaluatingSubmission = models.UpdateSubmissionRequest{
+		Status: entities.Evaluating,
+	}
 )

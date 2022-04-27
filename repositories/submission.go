@@ -74,13 +74,13 @@ func (r *SubmissionRepository) GetBySubmissionFilter(filter models.SubmissionFil
 	var result *gorm.DB
 
 	if filter.Limit == -1 && filter.Offset == -1 {
-		result = r.db.Conn.Where(strings.Join(query, " AND "), args...).Find(&submissions)
+		result = r.db.Conn.Order("id desc").Where(strings.Join(query, " AND "), args...).Find(&submissions)
 	} else if filter.Limit >= 0 && filter.Offset >= 0 {
-		result = r.db.Conn.Where(strings.Join(query, " AND "), args...).Limit(filter.Limit).Offset(filter.Offset).Find(&submissions)
+		result = r.db.Conn.Order("id desc").Where(strings.Join(query, " AND "), args...).Offset(filter.Offset).Limit(filter.Limit).Find(&submissions)
 	} else if filter.Limit >= 0 {
-		result = r.db.Conn.Where(strings.Join(query, " AND "), args...).Limit(filter.Limit).Find(&submissions)
+		result = r.db.Conn.Order("id desc").Where(strings.Join(query, " AND "), args...).Limit(filter.Limit).Find(&submissions)
 	} else {
-		result = r.db.Conn.Where(strings.Join(query, " AND "), args...).Offset(filter.Limit).Find(&submissions)
+		result = r.db.Conn.Order("id desc").Where(strings.Join(query, " AND "), args...).Offset(filter.Offset).Find(&submissions)
 	}
 
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -115,12 +115,12 @@ func makeSubmissionFilter(filter models.SubmissionFilter) ([]string, []interface
 		args = append(args, filter.UserId)
 	}
 
-	if filter.ProblemId > 0 {
+	if filter.ProblemId >= 0 {
 		query = append(query, "problem_id = ?")
 		args = append(args, filter.ProblemId)
 	}
 
-	if filter.Score > 0 {
+	if filter.Score >= 0 {
 		query = append(query, "score = ?")
 		args = append(args, filter.Score)
 	}
@@ -133,16 +133,6 @@ func makeSubmissionFilter(filter models.SubmissionFilter) ([]string, []interface
 	if filter.CompiledSuccesfully != nil {
 		query = append(query, "compiled_succesfully = ?")
 		args = append(args, filter.CompiledSuccesfully)
-	}
-
-	if filter.Limit > 0 {
-		query = append(query, "limit = ?")
-		args = append(args, filter.Limit)
-	}
-
-	if filter.Offset > 0 {
-		query = append(query, "offset = ?")
-		args = append(args, filter.Offset)
 	}
 
 	return query, args

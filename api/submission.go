@@ -97,8 +97,10 @@ func (api *API) parseSubmissionFilter(r *http.Request) *models.SubmissionFilter 
 		if err == nil && problem != nil {
 			ret.ProblemId = int(problem.ID)
 		} else {
-			ret.ProblemId = -1
+			ret.ProblemId = 0
 		}
+	} else {
+		ret.ProblemId = -1
 	}
 
 	if v, ok := r.URL.Query()["problemId"]; ok {
@@ -114,21 +116,23 @@ func (api *API) parseSubmissionFilter(r *http.Request) *models.SubmissionFilter 
 	if v, ok := r.URL.Query()["score"]; ok {
 		score, err := strconv.Atoi(v[0])
 
-		if err == nil && score > 0 {
+		if err == nil && score >= 0 {
 			ret.Score = score
 		} else {
 			ret.Score = -1
 		}
+	} else {
+		ret.Score = -1
 	}
 
 	if v, ok := r.URL.Query()["status"]; ok {
 		ret.Status = entities.SubmissionStatus(v[0])
 	}
 
-	if v, ok := r.URL.Query()["isCompiled"]; ok {
+	if v, ok := r.URL.Query()["compiledSuccesfully"]; ok {
 		compiled, err := strconv.ParseBool(v[0])
 
-		if err != nil {
+		if err == nil {
 			ret.CompiledSuccesfully = &compiled
 		} else {
 			ret.CompiledSuccesfully = nil
@@ -136,7 +140,7 @@ func (api *API) parseSubmissionFilter(r *http.Request) *models.SubmissionFilter 
 	}
 
 	if v, ok := r.URL.Query()["limit"]; ok {
-		if limit, err := strconv.Atoi(v[0]); err != nil {
+		if limit, err := strconv.Atoi(v[0]); err == nil {
 			ret.Limit = limit
 		} else {
 			ret.Limit = -1
@@ -144,7 +148,7 @@ func (api *API) parseSubmissionFilter(r *http.Request) *models.SubmissionFilter 
 	}
 
 	if v, ok := r.URL.Query()["offset"]; ok {
-		if offset, err := strconv.Atoi(v[0]); err != nil {
+		if offset, err := strconv.Atoi(v[0]); err == nil {
 			ret.Offset = offset
 		} else {
 			ret.Offset = -1

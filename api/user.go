@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -35,8 +34,6 @@ func (api *API) getUserByUsername(w http.ResponseWriter, r *http.Request) {
 func (api *API) getUsers(w http.ResponseWriter, r *http.Request) {
 	filter := api.parseUserFilter(r)
 	users, err := api.services.UserService.GetUsers(filter)
-
-	fmt.Println(filter)
 
 	if err != nil {
 		errorResponse(w, err.Error(), http.StatusInternalServerError)
