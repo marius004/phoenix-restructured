@@ -12,6 +12,7 @@ type Services struct {
 	ProblemTestService    ProblemTestService
 	SubmissionService     SubmissionService
 	SubmissionTestService SubmissionTestService
+	PostService           PostService
 }
 
 type UserService interface {
@@ -72,4 +73,17 @@ type SubmissionTestService interface {
 
 	CreateSubmissionTest(submissionTest *entities.SubmissionTest) error
 	UpdateSubmissionTest(testId, submissionId uint, request *models.UpdateSubmissionTestRequest) error
+}
+
+type PostService interface {
+	GetPosts() ([]*entities.Post, error)
+	GetPostByTitle(title string) (*entities.Post, error)
+	GetPostByID(id uint) (*entities.Post, error)
+
+	CreatePost(post *entities.Post) error
+
+	UpdatePostByID(id uint, request *models.UpdatePostRequest) error
+	UpdatePostByTitle(title string, request *models.UpdatePostRequest) error
+
+	DeletePost(post *entities.Post) error
 }

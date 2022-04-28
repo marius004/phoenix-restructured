@@ -32,6 +32,8 @@ var allEntities []interface{} = []interface{}{
 
 	&entities.Submission{},
 	&entities.SubmissionTest{},
+
+	&entities.Post{},
 }
 
 func (s *Server) Serve() {

@@ -13,6 +13,7 @@ var (
 	ErrProblemTestDoesNotExist    = errors.New("problem test does not exist")
 	ErrSubmissionDoesNotExist     = errors.New("submission does not exist")
 	ErrSubmissionTestDoesNotExist = errors.New("submission test does not exist")
+	ErrPostDoesNotExist           = errors.New("post does not exist")
 
 	ErrEmailAlreadyExists       = errors.New("email already exists")
 	ErrProblemDoesNotExist      = errors.New("problem does not exist")

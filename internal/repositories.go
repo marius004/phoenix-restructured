@@ -13,6 +13,8 @@ type Repositories struct {
 
 	SubmissionRepository     SubmissionRepository
 	SubmissionTestRepository SubmissionTestRepository
+
+	PostRepository PostRepository
 }
 
 type UserRepository interface {
@@ -74,4 +76,17 @@ type SubmissionTestRepository interface {
 
 	CreateSubmissionTest(submissionTest *entities.SubmissionTest) error
 	UpdateSubmissionTest(testId, submissionId uint, request *models.UpdateSubmissionTestRequest) error
+}
+
+type PostRepository interface {
+	GetPosts() ([]*entities.Post, error)
+	GetPostByTitle(title string) (*entities.Post, error)
+	GetPostByID(id uint) (*entities.Post, error)
+
+	CreatePost(post *entities.Post) error
+
+	UpdatePostByID(id uint, request *models.UpdatePostRequest) error
+	UpdatePostByTitle(title string, request *models.UpdatePostRequest) error
+
+	DeletePost(post *entities.Post) error
 }
