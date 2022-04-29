@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/marius004/phoenix/entities"
-	"github.com/marius004/phoenix/eval"
 	"github.com/marius004/phoenix/internal"
 	"github.com/marius004/phoenix/models"
+	"github.com/marius004/phoenix/services/eval"
 )
 
 type Checker struct {

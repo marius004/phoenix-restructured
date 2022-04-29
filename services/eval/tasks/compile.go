@@ -6,8 +6,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/marius004/phoenix/eval"
 	"github.com/marius004/phoenix/internal"
+	"github.com/marius004/phoenix/services/eval"
 )
 
 type CompileTask struct {

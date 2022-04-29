@@ -8,8 +8,8 @@ import (
 	"path"
 	"strconv"
 
-	"github.com/marius004/phoenix/eval"
 	"github.com/marius004/phoenix/internal"
+	"github.com/marius004/phoenix/services/eval"
 )
 
 type ExecuteTask struct {

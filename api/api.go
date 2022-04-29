@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/marius004/phoenix/eval/grader"
 	"github.com/marius004/phoenix/internal"
+	"github.com/marius004/phoenix/services/eval/grader"
 )
 
 type API struct {
