@@ -23,6 +23,10 @@ func (s *PostService) GetPostByID(id uint) (*entities.Post, error) {
 }
 
 func (s *PostService) CreatePost(post *entities.Post) error {
+	if post, _ := s.GetPostByTitle(post.Title); post != nil {
+		return internal.ErrPostTitleAlreadyExists
+	}
+
 	return s.postRepository.CreatePost(post)
 }
 
@@ -36,4 +40,10 @@ func (s *PostService) UpdatePostByTitle(title string, request *models.UpdatePost
 
 func (s *PostService) DeletePost(post *entities.Post) error {
 	return s.postRepository.DeletePost(post)
+}
+
+func NewPostService(postRepository internal.PostRepository) *PostService {
+	return &PostService{
+		postRepository: postRepository,
+	}
 }

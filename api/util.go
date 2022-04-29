@@ -18,6 +18,7 @@ const (
 	problemContextKey     = "problem"
 	problemTestContextKey = "problemTest"
 	submissionContextKey  = "submission"
+	postContextKey        = "post"
 )
 
 func errorResponse(w http.ResponseWriter, err string, status int) {
@@ -101,6 +102,17 @@ func submissionFromRequestContext(context context.Context) *entities.Submission 
 	}
 }
 
+func postFromRequestContext(context context.Context) *entities.Post {
+	switch post := context.Value(postContextKey).(type) {
+	case entities.Post:
+		return &post
+	case *entities.Post:
+		return post
+	default:
+		return nil
+	}
+}
+
 func convertStringToUint(s string) (uint, error) {
 	res, err := strconv.Atoi(s)
 
@@ -117,6 +129,18 @@ func (api *API) canManageProblem(problem *entities.Problem, user *entities.User)
 	}
 
 	if (internal.IsUserProposer(user) && problem.AuthorId == user.ID) || internal.IsUserAdmin(user) {
+		return true
+	}
+
+	return false
+}
+
+func (api *API) canManagePost(post *entities.Post, user *entities.User) bool {
+	if post == nil {
+		return false
+	}
+
+	if (internal.IsUserProposer(user) && post.UserId == user.ID) || internal.IsUserAdmin(user) {
 		return true
 	}
 

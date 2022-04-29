@@ -4,7 +4,9 @@ import "errors"
 
 var (
 	ErrCouldNotDeleteProblem = errors.New("could not delete problem")
+	ErrCouldNotDeletePost    = errors.New("could not delete post")
 	ErrCouldNotUpdateUser    = errors.New("could not update user data")
+	ErrCouldNotUpdatePost    = errors.New("could not update post")
 
 	ErrInvalidPassword       = errors.New("invalid username or password")
 	ErrUsernameAlreadyExists = errors.New("username already exists")
@@ -18,6 +20,7 @@ var (
 	ErrEmailAlreadyExists       = errors.New("email already exists")
 	ErrProblemDoesNotExist      = errors.New("problem does not exist")
 	ErrProblemNameAlreadyExists = errors.New("problem name already exists")
+	ErrPostTitleAlreadyExists   = errors.New("post title already exists")
 
 	ErrCouldNotGeneratePasswordHash = errors.New("could not generate password hash")
 

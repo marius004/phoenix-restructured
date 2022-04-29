@@ -43,7 +43,7 @@ func (r *PostRepository) GetPostByID(id uint) (*entities.Post, error) {
 }
 
 func (r *PostRepository) CreatePost(post *entities.Post) error {
-	result := r.db.Conn.Save(&post)
+	result := r.db.Conn.Create(&post)
 	return result.Error
 }
 
@@ -52,6 +52,8 @@ func (r *PostRepository) UpdatePostByID(id uint, request *models.UpdatePostReque
 
 	if err != nil {
 		return err
+	} else if post == nil {
+		return internal.ErrPostDoesNotExist
 	}
 
 	return r.updatePost(post, request)
@@ -62,13 +64,15 @@ func (r *PostRepository) UpdatePostByTitle(title string, request *models.UpdateP
 
 	if err != nil {
 		return err
+	} else if post == nil {
+		return internal.ErrPostDoesNotExist
 	}
 
 	return r.updatePost(post, request)
 }
 
 func (r *PostRepository) DeletePost(post *entities.Post) error {
-	result := r.db.Conn.Unscoped().Delete(&entities.Problem{}, "id = ?", post.ID)
+	result := r.db.Conn.Unscoped().Delete(&entities.Post{}, "id = ?", post.ID)
 	return result.Error
 }
 
@@ -83,4 +87,10 @@ func (r *PostRepository) updatePost(post *entities.Post, request *models.UpdateP
 
 	result := r.db.Conn.Save(&post)
 	return result.Error
+}
+
+func NewPostRepository(db *internal.Database) *PostRepository {
+	return &PostRepository{
+		db: db,
+	}
 }

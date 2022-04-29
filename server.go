@@ -87,6 +87,8 @@ func createRepositories(db *internal.Database) *internal.Repositories {
 
 		SubmissionRepository:     repositories.NewSubmissionRepository(db),
 		SubmissionTestRepository: repositories.NewSubmissionTestRepository(db),
+
+		PostRepository: repositories.NewPostRepository(db),
 	}
 }
 
@@ -99,5 +101,7 @@ func createServices(repos *internal.Repositories, config *internal.Config) *inte
 
 		SubmissionService:     services.NewSubmissionService(repos.SubmissionRepository),
 		SubmissionTestService: services.NewSubmissionTestService(repos.SubmissionTestRepository),
+
+		PostService: services.NewPostService(repos.PostRepository),
 	}
 }
