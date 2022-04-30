@@ -10,6 +10,7 @@ import (
 
 	"github.com/marius004/phoenix/entities"
 	"github.com/marius004/phoenix/internal"
+	"github.com/marius004/phoenix/models"
 )
 
 const randomCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -31,7 +32,7 @@ func CompileFile(ctx context.Context, sandbox internal.Sandbox, sourceCode []byt
 		return "", err
 	}
 
-	var runConf internal.RunConfig
+	var runConf models.RunConfig
 
 	out := &bytes.Buffer{}
 
@@ -68,8 +69,8 @@ func CopyInSandbox(sandbox internal.Sandbox, path string, data []byte) error {
 	return sandbox.WriteToFile(path, data, 7777)
 }
 
-func ExecuteFile(ctx context.Context, sandbox internal.Sandbox, lang internal.EvalConfigLanguage, problemId int, limit internal.Limit) (*internal.RunStatus, error) {
-	var runConf internal.RunConfig
+func ExecuteFile(ctx context.Context, sandbox internal.Sandbox, lang internal.EvalConfigLanguage, problemId int, limit models.Limit) (*models.RunStatus, error) {
+	var runConf models.RunConfig
 
 	runConf.MaxProcesses = 10
 	runConf.MemoryLimit = limit.Memory

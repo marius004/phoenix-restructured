@@ -115,17 +115,6 @@ func (api *API) postCtx(next http.Handler) http.Handler {
 	})
 }
 
-func (api *API) testCtx(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		postId, _ := convertStringToUint(chi.URLParam(r, "testId"))
-		postName := chi.URLParam(r, "testName")
-
-		fmt.Println(postId, postName)
-
-		next.ServeHTTP(w, r)
-	})
-}
-
 func (api *API) mustBeAuthed(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if user := userFromRequestContext(r.Context()); !internal.IsUserAuthed(user) {

@@ -2,25 +2,21 @@ package api
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/marius004/phoenix/internal"
-	"github.com/marius004/phoenix/services/eval/grader"
 )
 
 type API struct {
 	config   *internal.Config
 	services *internal.Services
-
-	grader *grader.Grader
 }
 
 func (api *API) Routes() http.Handler {
 	r := chi.NewRouter()
 
 	r.Use(api.jwtMiddleware)
-	go api.grader.Handle()
+	go api.services.Grader.Handle()
 
 	r.Route("/auth", func(r chi.Router) {
 		r.With(api.mustNotBeAuthed).Post("/register", api.register)
@@ -80,10 +76,9 @@ func (api *API) Routes() http.Handler {
 	return r
 }
 
-func NewAPI(config *internal.Config, services *internal.Services, evalConfig *internal.EvalConfig) *API {
+func NewAPI(config *internal.Config, services *internal.Services) *API {
 	return &API{
 		config:   config,
 		services: services,
-		grader:   grader.NewGrader(300*time.Millisecond, internal.NewEvaluatorServices(services), evalConfig),
 	}
 }

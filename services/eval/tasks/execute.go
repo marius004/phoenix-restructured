@@ -9,14 +9,15 @@ import (
 	"strconv"
 
 	"github.com/marius004/phoenix/internal"
+	"github.com/marius004/phoenix/models"
 	"github.com/marius004/phoenix/services/eval"
 )
 
 type ExecuteTask struct {
 	EvalConfig *internal.EvalConfig
 
-	Request  *internal.ExecuteRequest
-	Response *internal.ExecuteResponse
+	Request  *models.ExecuteRequest
+	Response *models.ExecuteResponse
 }
 
 func (t *ExecuteTask) Run(ctx context.Context, sandbox internal.Sandbox) error {
@@ -65,7 +66,7 @@ func (t *ExecuteTask) Run(ctx context.Context, sandbox internal.Sandbox) error {
 		return err
 	}
 
-	limit := internal.Limit{
+	limit := models.Limit{
 		Time: t.Request.Time,
 
 		Memory: t.Request.Memory,

@@ -6,13 +6,14 @@ import (
 )
 
 type Services struct {
-	UserService UserService
-
+	UserService           UserService
 	ProblemService        ProblemService
 	ProblemTestService    ProblemTestService
 	SubmissionService     SubmissionService
 	SubmissionTestService SubmissionTestService
 	PostService           PostService
+
+	Grader Grader
 }
 
 type UserService interface {
@@ -86,4 +87,8 @@ type PostService interface {
 	UpdatePostByTitle(title string, request *models.UpdatePostRequest) error
 
 	DeletePost(post *entities.Post) error
+}
+
+type Grader interface {
+	Handle()
 }

@@ -4,15 +4,16 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
-
 	"github.com/marius004/phoenix/api"
 	"github.com/marius004/phoenix/entities"
 	"github.com/marius004/phoenix/internal"
 	"github.com/marius004/phoenix/repositories"
 	"github.com/marius004/phoenix/services"
+	"github.com/marius004/phoenix/services/eval/grader"
 )
 
 type Server struct {
@@ -37,7 +38,7 @@ var allEntities []interface{} = []interface{}{
 }
 
 func (s *Server) Serve() {
-	var api = api.NewAPI(s.config, s.services, s.evalConfig)
+	var api = api.NewAPI(s.config, s.services)
 	s.db.AutoMigrate(allEntities...)
 
 	r := chi.NewRouter()
@@ -65,7 +66,6 @@ func (s *Server) Serve() {
 }
 
 func NewServer(db *internal.Database, config *internal.Config, evalConfig *internal.EvalConfig) *Server {
-
 	repositories := createRepositories(db)
 
 	return &Server{
@@ -74,7 +74,7 @@ func NewServer(db *internal.Database, config *internal.Config, evalConfig *inter
 		evalConfig: evalConfig,
 
 		repositories: repositories,
-		services:     createServices(repositories, config),
+		services:     createServices(repositories, config, evalConfig),
 	}
 }
 
@@ -92,16 +92,31 @@ func createRepositories(db *internal.Database) *internal.Repositories {
 	}
 }
 
-func createServices(repos *internal.Repositories, config *internal.Config) *internal.Services {
+func createServices(repos *internal.Repositories, config *internal.Config, evalConfig *internal.EvalConfig) *internal.Services {
+	var (
+		userService = services.NewUserService(repos.UserRepository)
+
+		problemService     = services.NewProblemService(repos.ProblemRepository)
+		problemTestService = services.NewProblemTestService(repos.ProblemTestRepository)
+
+		submissionService     = services.NewSubmissionService(repos.SubmissionRepository)
+		submissionTestService = services.NewSubmissionTestService(repos.SubmissionTestRepository)
+
+		postService = services.NewPostService(repos.PostRepository)
+
+		graderServices = internal.NewGraderServices(problemService, problemTestService, submissionService, submissionTestService)
+	)
+
 	return &internal.Services{
-		UserService: services.NewUserService(repos.UserRepository),
+		UserService: userService,
 
-		ProblemService:     services.NewProblemService(repos.ProblemRepository),
-		ProblemTestService: services.NewProblemTestService(repos.ProblemTestRepository),
+		ProblemService:     problemService,
+		ProblemTestService: problemTestService,
 
-		SubmissionService:     services.NewSubmissionService(repos.SubmissionRepository),
-		SubmissionTestService: services.NewSubmissionTestService(repos.SubmissionTestRepository),
+		SubmissionService:     submissionService,
+		SubmissionTestService: submissionTestService,
 
-		PostService: services.NewPostService(repos.PostRepository),
+		PostService: postService,
+		Grader:      grader.NewGrader(300*time.Millisecond, graderServices, evalConfig),
 	}
 }

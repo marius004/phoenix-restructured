@@ -12,7 +12,7 @@ import (
 )
 
 type Checker struct {
-	services   *internal.EvaluatorServices
+	services   *internal.GraderServices
 	evalConfig *internal.EvalConfig
 }
 
@@ -158,7 +158,7 @@ func (c *Checker) Check(submission *entities.Submission) error {
 	return nil
 }
 
-func NewChecker(evalConfig *internal.EvalConfig, services *internal.EvaluatorServices) *Checker {
+func NewChecker(evalConfig *internal.EvalConfig, services *internal.GraderServices) *Checker {
 	return &Checker{
 		services:   services,
 		evalConfig: evalConfig,

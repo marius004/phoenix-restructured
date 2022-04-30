@@ -7,14 +7,15 @@ import (
 	"path"
 
 	"github.com/marius004/phoenix/internal"
+	"github.com/marius004/phoenix/models"
 	"github.com/marius004/phoenix/services/eval"
 )
 
 type CompileTask struct {
 	EvalConfig *internal.EvalConfig
 
-	Request  *internal.CompileRequest
-	Response *internal.CompileResponse
+	Request  *models.CompileRequest
+	Response *models.CompileResponse
 }
 
 func (task *CompileTask) Run(ctx context.Context, sandbox internal.Sandbox) error {

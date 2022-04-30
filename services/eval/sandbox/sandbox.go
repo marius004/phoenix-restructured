@@ -14,6 +14,7 @@ import (
 	"sync"
 
 	"github.com/marius004/phoenix/internal"
+	"github.com/marius004/phoenix/models"
 	"github.com/marius004/phoenix/services/eval"
 )
 
@@ -93,7 +94,7 @@ func (s *Sandbox) DeleteFile(path string) error {
 	return os.Remove(s.GetPath(path))
 }
 
-func (s *Sandbox) ExecuteCommand(ctx context.Context, command []string, config *internal.RunConfig) (*internal.RunStatus, error) {
+func (s *Sandbox) ExecuteCommand(ctx context.Context, command []string, config *models.RunConfig) (*models.RunStatus, error) {
 	logger := internal.GetGlobalLoggerInstance()
 
 	s.mutex.Lock()
@@ -140,7 +141,7 @@ func (s *Sandbox) Cleanup() error {
 	return exec.Command(s.evalConfig.IsolatePath, params...).Run()
 }
 
-func (s *Sandbox) buildRunFlags(config *internal.RunConfig) (res []string) {
+func (s *Sandbox) buildRunFlags(config *models.RunConfig) (res []string) {
 	res = append(res, "--box-id="+strconv.Itoa(s.id))
 	res = append(res, "--cg", "--cg-timing")
 
@@ -185,14 +186,14 @@ func (s *Sandbox) buildRunFlags(config *internal.RunConfig) (res []string) {
 }
 
 // parseMetaFile parses the meta file that contains information about the execution of a particular task executed within the sandbox.
-func parseMetaFile(path string) (*internal.RunStatus, error) {
+func parseMetaFile(path string) (*models.RunStatus, error) {
 	r, err := os.OpenFile(path, os.O_RDONLY, 0777)
 
 	if err != nil {
 		return nil, err
 	}
 
-	var ret = new(internal.RunStatus)
+	var ret = new(models.RunStatus)
 	s := bufio.NewScanner(r)
 
 	for s.Scan() {

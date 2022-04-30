@@ -16,7 +16,7 @@ import (
 type Grader struct {
 	iterationInterval time.Duration
 
-	services *internal.EvaluatorServices
+	services *internal.GraderServices
 	manager  *sandbox.Manager
 
 	evalConfig *internal.EvalConfig
@@ -75,12 +75,12 @@ func (g *Grader) compileSubmission(submission *entities.Submission) bool {
 
 	compile := &tasks.CompileTask{
 		EvalConfig: g.evalConfig,
-		Request: &internal.CompileRequest{
+		Request: &models.CompileRequest{
 			ID:         submission.ID,
 			Lang:       string(submission.Language),
 			SourceCode: submission.SourceCode,
 		},
-		Response: &internal.CompileResponse{},
+		Response: &models.CompileResponse{},
 	}
 
 	// try to compile
@@ -184,13 +184,13 @@ func (g *Grader) executeSubmission(submission *entities.Submission) bool {
 func (g *Grader) executeProblemTest(submission *entities.Submission, problem *entities.Problem, problemTest *entities.ProblemTest) *tasks.ExecuteTask {
 	return &tasks.ExecuteTask{
 		EvalConfig: g.evalConfig,
-		Request: &internal.ExecuteRequest{
+		Request: &models.ExecuteRequest{
 			ID: submission.ID,
 
 			SubmissionId: int(submission.ID),
 			TestId:       int(problemTest.ID),
 
-			Limit: internal.Limit{
+			Limit: models.Limit{
 				Time:   float64(problem.TimeLimit),
 				Memory: problem.MemoryLimit,
 				Stack:  problem.StackLimit,
@@ -201,7 +201,7 @@ func (g *Grader) executeProblemTest(submission *entities.Submission, problem *en
 			Lang:      string(submission.Language),
 		},
 
-		Response: &internal.ExecuteResponse{},
+		Response: &models.ExecuteResponse{},
 	}
 }
 
@@ -209,7 +209,7 @@ func (g *Grader) getAppropriateChecker() internal.Checker {
 	return checker.NewChecker(g.evalConfig, g.services)
 }
 
-func NewGrader(iterationInterval time.Duration, services *internal.EvaluatorServices, evalConfig *internal.EvalConfig) *Grader {
+func NewGrader(iterationInterval time.Duration, services *internal.GraderServices, evalConfig *internal.EvalConfig) *Grader {
 	manager := sandbox.NewManager(evalConfig)
 
 	os.Mkdir(evalConfig.CompilePath, 0777)
