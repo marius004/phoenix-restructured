@@ -11,7 +11,6 @@ type Services struct {
 	ProblemTestService    ProblemTestService
 	SubmissionService     SubmissionService
 	SubmissionTestService SubmissionTestService
-	PostService           PostService
 
 	Grader Grader
 }
@@ -29,6 +28,8 @@ type UserService interface {
 	DeleteUser(user *entities.User) error
 }
 
+// aduga un context la get pentru  a filtra problemele vizibile/nevizibile
+// visible si proposer_id in context 
 type ProblemService interface {
 	CreateProblem(problem *entities.Problem) error
 
@@ -74,19 +75,6 @@ type SubmissionTestService interface {
 
 	CreateSubmissionTest(submissionTest *entities.SubmissionTest) error
 	UpdateSubmissionTest(testId, submissionId uint, request *models.UpdateSubmissionTestRequest) error
-}
-
-type PostService interface {
-	GetPosts() ([]*entities.Post, error)
-	GetPostByTitle(title string) (*entities.Post, error)
-	GetPostByID(id uint) (*entities.Post, error)
-
-	CreatePost(post *entities.Post) error
-
-	UpdatePostByID(id uint, request *models.UpdatePostRequest) error
-	UpdatePostByTitle(title string, request *models.UpdatePostRequest) error
-
-	DeletePost(post *entities.Post) error
 }
 
 type Grader interface {

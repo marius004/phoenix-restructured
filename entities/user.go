@@ -24,5 +24,4 @@ type User struct {
 
 	Problems    []Problem    `gorm:"foreignKey:AuthorId;references:ID;constraint:OnDelete:CASCADE;";json:"-"`
 	Submissions []Submission `gorm:"foreignKey:UserId;references:ID;constraint:OnDelete:CASCADE;";json:"-"`
-	Posts       []Post       `gorm:"foreignKey:UserId;references:ID;constraint:OnDelete:CASCADE;";json:"-"`
 }

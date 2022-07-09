@@ -33,8 +33,6 @@ var allEntities []interface{} = []interface{}{
 
 	&entities.Submission{},
 	&entities.SubmissionTest{},
-
-	&entities.Post{},
 }
 
 func (s *Server) Serve() {
@@ -87,8 +85,6 @@ func createRepositories(db *internal.Database) *internal.Repositories {
 
 		SubmissionRepository:     repositories.NewSubmissionRepository(db),
 		SubmissionTestRepository: repositories.NewSubmissionTestRepository(db),
-
-		PostRepository: repositories.NewPostRepository(db),
 	}
 }
 
@@ -102,8 +98,6 @@ func createServices(repos *internal.Repositories, config *internal.Config, evalC
 		submissionService     = services.NewSubmissionService(repos.SubmissionRepository)
 		submissionTestService = services.NewSubmissionTestService(repos.SubmissionTestRepository)
 
-		postService = services.NewPostService(repos.PostRepository)
-
 		graderServices = internal.NewGraderServices(problemService, problemTestService, submissionService, submissionTestService)
 	)
 
@@ -116,7 +110,6 @@ func createServices(repos *internal.Repositories, config *internal.Config, evalC
 		SubmissionService:     submissionService,
 		SubmissionTestService: submissionTestService,
 
-		PostService: postService,
-		Grader:      grader.NewGrader(300*time.Millisecond, graderServices, evalConfig),
+		Grader: grader.NewGrader(300*time.Millisecond, graderServices, evalConfig),
 	}
 }

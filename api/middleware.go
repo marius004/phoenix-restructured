@@ -100,21 +100,6 @@ func (api *API) submissionCtx(next http.Handler) http.Handler {
 	})
 }
 
-func (api *API) postCtx(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		postId, _ := convertStringToUint(chi.URLParam(r, "postId"))
-		post, err := api.services.PostService.GetPostByID(postId)
-
-		if err != nil || post == nil {
-			errorResponse(w, internal.ErrPostDoesNotExist.Error(), http.StatusNotFound)
-			return
-		}
-
-		ctx := context.WithValue(r.Context(), postContextKey, post)
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
-}
-
 func (api *API) mustBeAuthed(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if user := userFromRequestContext(r.Context()); !internal.IsUserAuthed(user) {

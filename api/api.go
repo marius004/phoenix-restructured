@@ -62,17 +62,6 @@ func (api *API) Routes() http.Handler {
 		})
 	})
 
-	r.Route("/posts", func(r chi.Router) {
-		r.Get("/", api.getPosts)
-		r.With(api.mustBeProposer).Post("/", api.createPost)
-
-		r.With(api.postCtx).Route("/{postId}", func(r chi.Router) {
-			r.Get("/", api.getPost)
-			r.With(api.mustBeProposer).Put("/", api.updatePost)
-			r.With(api.mustBeProposer).Delete("/", api.deletePost)
-		})
-	})
-
 	return r
 }
 
