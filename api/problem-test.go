@@ -11,7 +11,7 @@ import (
 
 func (api *API) getProblemTests(w http.ResponseWriter, r *http.Request) {
 	problem := problemFromRequestContext(r.Context())
-	tests, err := api.services.ProblemTestService.GetProblemTestsByProblemID(problem.ID)
+	tests, err := api.services.ProblemTestService.GetProblemTestsByProblemID(r.Context(), problem.ID)
 
 	if err != nil {
 		errorResponse(w, err.Error(), http.StatusBadRequest)
@@ -59,7 +59,7 @@ func (api *API) updateProblemTestById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := api.services.ProblemTestService.UpdateProblemTestByID(problemTest.ID, &data); err != nil {
+	if err := api.services.ProblemTestService.UpdateProblemTestByID(r.Context(), problemTest.ID, &data); err != nil {
 		errorResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -78,7 +78,7 @@ func (api *API) deleteProblemTestById(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := api.services.ProblemTestService.DeleteProblemTestByID(problemTest.ID); err != nil {
+	if err := api.services.ProblemTestService.DeleteProblemTestByID(r.Context(), problemTest.ID); err != nil {
 		errorResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -116,7 +116,7 @@ func (api *API) createProblemTest(w http.ResponseWriter, r *http.Request) {
 	problemTest.Input = data.Input
 	problemTest.Output = data.Output
 
-	if err := api.services.ProblemTestService.CreateProblemTest(&problemTest); err != nil {
+	if err := api.services.ProblemTestService.CreateProblemTest(r.Context(), &problemTest); err != nil {
 		errorResponse(w, err.Error(), http.StatusBadRequest)
 		return
 	}

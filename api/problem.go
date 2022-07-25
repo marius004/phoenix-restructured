@@ -14,7 +14,7 @@ import (
 
 func (api *API) getProblems(w http.ResponseWriter, r *http.Request) {
 	filter := api.parseProblemFilter(r.URL)
-	problems, err := api.services.ProblemService.GetProblemsByFilter(filter)
+	problems, err := api.services.ProblemService.GetProblemsByFilter(r.Context(), filter)
 
 	if err != nil {
 		fmt.Println(err)
@@ -54,7 +54,7 @@ func (api *API) createProblem(w http.ResponseWriter, r *http.Request) {
 
 	author := userFromRequestContext(r.Context())
 	problem := models.NewProblem(data, author.ID)
-	err := api.services.ProblemService.CreateProblem(problem)
+	err := api.services.ProblemService.CreateProblem(r.Context(), problem)
 
 	if errors.Is(err, internal.ErrProblemNameAlreadyExists) {
 		errorResponse(w, err.Error(), http.StatusBadRequest)
@@ -91,7 +91,7 @@ func (api *API) updateProblemByName(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := api.services.ProblemService.UpdateProblemByID(problem.ID, user, data)
+	err := api.services.ProblemService.UpdateProblemByID(r.Context(), problem.ID, user, data)
 	if errors.Is(err, internal.ErrUnauthorized) {
 		errorResponse(w, err.Error(), http.StatusUnauthorized)
 		return
@@ -114,7 +114,7 @@ func (api *API) deleteProblem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := api.services.ProblemService.DeleteProblem(problem); err != nil {
+	if err := api.services.ProblemService.DeleteProblem(r.Context(), problem); err != nil {
 		errorResponse(w, internal.ErrCouldNotDeleteProblem.Error(), http.StatusInternalServerError)
 		return
 	}

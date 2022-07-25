@@ -27,7 +27,7 @@ func (g *Grader) Handle() {
 	ticker := time.NewTicker(g.iterationInterval)
 
 	for range ticker.C {
-		submissions, err := g.services.SubmissionService.GetBySubmissionFilter(waitingSubmissions)
+		submissions, err := g.services.SubmissionService.GetBySubmissionFilter(internal.DefaultCtx, waitingSubmissions)
 
 		if err != nil {
 			logger.Println(err)
@@ -39,7 +39,7 @@ func (g *Grader) Handle() {
 		}
 
 		for _, submission := range submissions {
-			if err := g.services.SubmissionService.UpdateSubmission(submission.ID, &evaluatingSubmission); err != nil {
+			if err := g.services.SubmissionService.UpdateSubmission(internal.DefaultCtx, submission.ID, &evaluatingSubmission); err != nil {
 				logger.Println(err)
 				continue
 			}
@@ -96,7 +96,7 @@ updateSubmission:
 		Message:             compile.Response.Message,
 	}
 
-	if err := g.services.SubmissionService.UpdateSubmission(submission.ID, updateSubmissionRequest); err != nil {
+	if err := g.services.SubmissionService.UpdateSubmission(internal.DefaultCtx, submission.ID, updateSubmissionRequest); err != nil {
 		logger.Println(err)
 		return false
 	}
@@ -107,18 +107,18 @@ updateSubmission:
 func (g *Grader) handleGraderError(submission *entities.Submission, message string) {
 	updateSubmissionRequest := &models.UpdateSubmissionRequest{Message: message}
 
-	if err := g.services.SubmissionService.UpdateSubmission(submission.ID, updateSubmissionRequest); err != nil {
+	if err := g.services.SubmissionService.UpdateSubmission(internal.DefaultCtx, submission.ID, updateSubmissionRequest); err != nil {
 		internal.GetGlobalLoggerInstance().Println(err)
 	}
 }
 
 func (g *Grader) createSubmissionTest(submissionTest *entities.SubmissionTest) error {
-	return g.services.SubmissionTestService.CreateSubmissionTest(submissionTest)
+	return g.services.SubmissionTestService.CreateSubmissionTest(internal.DefaultCtx, submissionTest)
 }
 
 func (g *Grader) executeSubmission(submission *entities.Submission) bool {
 	logger := internal.GetGlobalLoggerInstance()
-	problem, err := g.services.ProblemService.GetProblemByID(submission.ProblemId)
+	problem, err := g.services.ProblemService.GetProblemByID(internal.DefaultCtx, submission.ProblemId)
 
 	if err != nil {
 		logger.Println("could not fetch problem", err)
@@ -126,7 +126,7 @@ func (g *Grader) executeSubmission(submission *entities.Submission) bool {
 		return false
 	}
 
-	problemTests, err := g.services.ProblemTestService.GetProblemTestsByProblemID(problem.ID)
+	problemTests, err := g.services.ProblemTestService.GetProblemTestsByProblemID(internal.DefaultCtx, problem.ID)
 	if err != nil {
 		logger.Println("could not fetch problem tests", err)
 		g.handleGraderError(submission, "could not fetch problem tests")

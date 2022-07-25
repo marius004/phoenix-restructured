@@ -14,9 +14,8 @@ func (api *API) getUserByUsername(w http.ResponseWriter, r *http.Request) {
 	logger := internal.GetGlobalLoggerInstance()
 	username := chi.URLParam(r, "username")
 
-	user, err := api.services.UserService.GetUserByUsername(username)
+	user, err := api.services.UserService.GetUserByUsername(r.Context(), username)
 
-	// TODO implement unknown errror & return 500 http codes for all handlers
 	if err != nil {
 		logger.Println(err)
 		errorResponse(w, err.Error(), http.StatusInternalServerError)
@@ -33,7 +32,7 @@ func (api *API) getUserByUsername(w http.ResponseWriter, r *http.Request) {
 
 func (api *API) getUsers(w http.ResponseWriter, r *http.Request) {
 	filter := api.parseUserFilter(r)
-	users, err := api.services.UserService.GetUsers(filter)
+	users, err := api.services.UserService.GetUsers(r.Context(), filter)
 
 	if err != nil {
 		errorResponse(w, err.Error(), http.StatusInternalServerError)
@@ -61,7 +60,7 @@ func (api *API) updateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := api.services.UserService.UpdateUser(user, &data); err != nil {
+	if err := api.services.UserService.UpdateUser(r.Context(), user, &data); err != nil {
 		errorResponse(w, internal.ErrCouldNotUpdateUser.Error(), http.StatusInternalServerError)
 		return
 	}

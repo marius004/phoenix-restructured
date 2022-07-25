@@ -25,7 +25,7 @@ func (c *Checker) handleSubmissionError(submission *entities.Submission, message
 		CompiledSuccesfully: &models.CompilationSuccess,
 	}
 
-	if err := c.services.SubmissionService.UpdateSubmission(submission.ID, updateSubmissionRequest); err != nil {
+	if err := c.services.SubmissionService.UpdateSubmission(internal.DefaultCtx, submission.ID, updateSubmissionRequest); err != nil {
 		internal.GetGlobalLoggerInstance().Println(err)
 	}
 }
@@ -40,7 +40,7 @@ func (c *Checker) handleSubmissionTestError(submission *entities.Submission, sub
 		ExitCode:         0,
 	}
 
-	if err := c.services.SubmissionTestService.UpdateSubmissionTest(submissionTest.ProblemTestId, submission.ID, updateSubmissionTestRequest); err != nil {
+	if err := c.services.SubmissionTestService.UpdateSubmissionTest(internal.DefaultCtx, submissionTest.ProblemTestId, submission.ID, updateSubmissionTestRequest); err != nil {
 		internal.GetGlobalLoggerInstance().Println(err)
 	}
 }
@@ -50,7 +50,7 @@ func (c *Checker) handleConstraintLimit(submission *entities.Submission, submiss
 		ExecutionMessage: constraint,
 	}
 
-	if err := c.services.SubmissionTestService.UpdateSubmissionTest(submissionTest.ProblemTestId, submission.ID, updateSubmissionTestRequest); err != nil {
+	if err := c.services.SubmissionTestService.UpdateSubmissionTest(internal.DefaultCtx, submissionTest.ProblemTestId, submission.ID, updateSubmissionTestRequest); err != nil {
 		internal.GetGlobalLoggerInstance().Println(err)
 	}
 }
@@ -82,7 +82,7 @@ func (c *Checker) isValidAnswer(received, expected []byte) bool {
 
 func (c *Checker) Check(submission *entities.Submission) error {
 	logger := internal.GetGlobalLoggerInstance()
-	problem, err := c.services.ProblemService.GetProblemByID(submission.ProblemId)
+	problem, err := c.services.ProblemService.GetProblemByID(internal.DefaultCtx, submission.ProblemId)
 
 	if err != nil {
 		logger.Println("could not fetch problem", err)
@@ -90,7 +90,7 @@ func (c *Checker) Check(submission *entities.Submission) error {
 		return err
 	}
 
-	problemTests, err := c.services.ProblemTestService.GetProblemTestsByProblemID(problem.ID)
+	problemTests, err := c.services.ProblemTestService.GetProblemTestsByProblemID(internal.DefaultCtx, problem.ID)
 	if err != nil {
 		logger.Println("could not fetch problem tests", err)
 		c.handleSubmissionError(submission, "could not fetch problem tests")
@@ -99,7 +99,7 @@ func (c *Checker) Check(submission *entities.Submission) error {
 
 	totalScore := 0
 	for _, problemTest := range problemTests {
-		submissionTest, err := c.services.SubmissionTestService.GetSubmissionTestByTestAndSubmissionID(problemTest.ID, submission.ID)
+		submissionTest, err := c.services.SubmissionTestService.GetSubmissionTestByTestAndSubmissionID(internal.DefaultCtx, problemTest.ID, submission.ID)
 
 		if err != nil {
 			c.handleSubmissionTestError(submission, submissionTest, "could not get submission test")
@@ -138,7 +138,7 @@ func (c *Checker) Check(submission *entities.Submission) error {
 			ExecutionMessage: message,
 		}
 
-		if err := c.services.SubmissionTestService.UpdateSubmissionTest(problemTest.ID, submission.ID, updateSubmissionTest); err != nil {
+		if err := c.services.SubmissionTestService.UpdateSubmissionTest(internal.DefaultCtx, problemTest.ID, submission.ID, updateSubmissionTest); err != nil {
 			logger.Println(err)
 		}
 	}
@@ -150,7 +150,7 @@ func (c *Checker) Check(submission *entities.Submission) error {
 		Status: entities.Evaluated,
 	}
 
-	if err := c.services.SubmissionService.UpdateSubmission(submission.ID, updateSubmissionRequest); err != nil {
+	if err := c.services.SubmissionService.UpdateSubmission(internal.DefaultCtx, submission.ID, updateSubmissionRequest); err != nil {
 		logger.Println(err)
 		return err
 	}

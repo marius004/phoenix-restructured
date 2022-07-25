@@ -12,7 +12,7 @@ import (
 
 func (api *API) getSubmissions(w http.ResponseWriter, r *http.Request) {
 	filter := api.parseSubmissionFilter(r)
-	submissions, err := api.services.SubmissionService.GetBySubmissionFilter(*filter)
+	submissions, err := api.services.SubmissionService.GetBySubmissionFilter(r.Context(), *filter)
 
 	if err != nil {
 		errorResponse(w, err.Error(), http.StatusBadRequest)
@@ -44,7 +44,7 @@ func (api *API) createSubmission(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if problem, err := api.services.ProblemService.GetProblemByID(uint(data.ProblemId)); err != nil || problem == nil {
+	if problem, err := api.services.ProblemService.GetProblemByID(r.Context(), uint(data.ProblemId)); err != nil || problem == nil {
 		errorResponse(w, internal.ErrProblemDoesNotExist.Error(), http.StatusBadRequest)
 		return
 	}
@@ -58,7 +58,7 @@ func (api *API) createSubmission(w http.ResponseWriter, r *http.Request) {
 	submission.Language = data.Language
 	submission.Status = entities.Waiting
 
-	if err := api.services.SubmissionService.CreateSubmission(submission); err != nil {
+	if err := api.services.SubmissionService.CreateSubmission(r.Context(), submission); err != nil {
 		errorResponse(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -72,7 +72,7 @@ func (api *API) parseSubmissionFilter(r *http.Request) *models.SubmissionFilter 
 	if v, ok := r.URL.Query()["username"]; ok {
 		username := v[0]
 
-		user, err := api.services.UserService.GetUserByUsername(username)
+		user, err := api.services.UserService.GetUserByUsername(r.Context(), username)
 		if err == nil && user != nil {
 			ret.UserId = int(user.ID)
 		} else {
@@ -93,7 +93,7 @@ func (api *API) parseSubmissionFilter(r *http.Request) *models.SubmissionFilter 
 	if v, ok := r.URL.Query()["problem"]; ok {
 		problemName := v[0]
 
-		problem, err := api.services.ProblemService.GetProblemByName(problemName)
+		problem, err := api.services.ProblemService.GetProblemByName(r.Context(), problemName)
 		if err == nil && problem != nil {
 			ret.ProblemId = int(problem.ID)
 		} else {

@@ -37,7 +37,7 @@ func (api *API) jwtMiddleware(next http.Handler) http.Handler {
 				return
 			}
 
-			user, err := api.services.UserService.GetUserByID(uint(userId))
+			user, err := api.services.UserService.GetUserByID(r.Context(), uint(userId))
 
 			if err != nil {
 				fmt.Println(err)
@@ -58,7 +58,7 @@ func (api *API) jwtMiddleware(next http.Handler) http.Handler {
 func (api *API) problemCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		name := chi.URLParam(r, "problemName")
-		problem, err := api.services.ProblemService.GetProblemByName(name)
+		problem, err := api.services.ProblemService.GetProblemByName(r.Context(), name)
 
 		if err != nil || problem == nil {
 			errorResponse(w, internal.ErrProblemDoesNotExist.Error(), http.StatusNotFound)
@@ -73,7 +73,7 @@ func (api *API) problemCtx(next http.Handler) http.Handler {
 func (api *API) problemTestCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id, _ := convertStringToUint(chi.URLParam(r, "problemTestId"))
-		problemTest, err := api.services.ProblemTestService.GetProblemTestByID(id)
+		problemTest, err := api.services.ProblemTestService.GetProblemTestByID(r.Context(), id)
 
 		if err != nil || problemTest == nil {
 			errorResponse(w, internal.ErrProblemTestDoesNotExist.Error(), http.StatusNotFound)
@@ -88,7 +88,7 @@ func (api *API) problemTestCtx(next http.Handler) http.Handler {
 func (api *API) submissionCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id, _ := convertStringToUint(chi.URLParam(r, "submissionId"))
-		submission, err := api.services.SubmissionService.GetSubmissionByID(id)
+		submission, err := api.services.SubmissionService.GetSubmissionByID(r.Context(), id)
 
 		if err != nil || submission == nil {
 			errorResponse(w, internal.ErrSubmissionDoesNotExist.Error(), http.StatusNotFound)

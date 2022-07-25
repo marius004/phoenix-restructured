@@ -11,7 +11,6 @@ import (
 	"github.com/marius004/phoenix/api"
 	"github.com/marius004/phoenix/entities"
 	"github.com/marius004/phoenix/internal"
-	"github.com/marius004/phoenix/repositories"
 	"github.com/marius004/phoenix/services"
 	"github.com/marius004/phoenix/services/eval/grader"
 )
@@ -21,8 +20,7 @@ type Server struct {
 	config     *internal.Config
 	evalConfig *internal.EvalConfig
 
-	repositories *internal.Repositories
-	services     *internal.Services
+	services *internal.Services
 }
 
 var allEntities []interface{} = []interface{}{
@@ -64,39 +62,24 @@ func (s *Server) Serve() {
 }
 
 func NewServer(db *internal.Database, config *internal.Config, evalConfig *internal.EvalConfig) *Server {
-	repositories := createRepositories(db)
-
 	return &Server{
 		db:         db,
 		config:     config,
 		evalConfig: evalConfig,
 
-		repositories: repositories,
-		services:     createServices(repositories, config, evalConfig),
+		services: createServices(db, config, evalConfig),
 	}
 }
 
-func createRepositories(db *internal.Database) *internal.Repositories {
-	return &internal.Repositories{
-		UserRepository: repositories.NewUserRepository(db),
-
-		ProblemRepository:     repositories.NewProblemRepository(db),
-		ProblemTestRepository: repositories.NewProblemTestRepository(db),
-
-		SubmissionRepository:     repositories.NewSubmissionRepository(db),
-		SubmissionTestRepository: repositories.NewSubmissionTestRepository(db),
-	}
-}
-
-func createServices(repos *internal.Repositories, config *internal.Config, evalConfig *internal.EvalConfig) *internal.Services {
+func createServices(db *internal.Database, config *internal.Config, evalConfig *internal.EvalConfig) *internal.Services {
 	var (
-		userService = services.NewUserService(repos.UserRepository)
+		userService = services.NewUserService(db)
 
-		problemService     = services.NewProblemService(repos.ProblemRepository)
-		problemTestService = services.NewProblemTestService(repos.ProblemTestRepository)
+		problemService     = services.NewProblemService(db)
+		problemTestService = services.NewProblemTestService(db)
 
-		submissionService     = services.NewSubmissionService(repos.SubmissionRepository)
-		submissionTestService = services.NewSubmissionTestService(repos.SubmissionTestRepository)
+		submissionService     = services.NewSubmissionService(db)
+		submissionTestService = services.NewSubmissionTestService(db)
 
 		graderServices = internal.NewGraderServices(problemService, problemTestService, submissionService, submissionTestService)
 	)

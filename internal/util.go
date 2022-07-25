@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -12,6 +13,8 @@ import (
 	"github.com/marius004/phoenix/entities"
 	"golang.org/x/crypto/bcrypt"
 )
+
+var DefaultCtx = context.Background()
 
 func GeneratePasswordHash(password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)

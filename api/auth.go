@@ -28,7 +28,7 @@ func (api *API) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := api.services.UserService.GetUserByUsername(data.Username)
+	user, err := api.services.UserService.GetUserByUsername(r.Context(), data.Username)
 	if user == nil || err != nil {
 		errorResponse(w, internal.ErrUserNotFound.Error(), http.StatusNotFound)
 		return
@@ -69,7 +69,7 @@ func (api *API) register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user := newUser(data)
-	err := api.services.UserService.CreateUser(user)
+	err := api.services.UserService.CreateUser(r.Context(), user)
 
 	if errors.Is(err, internal.ErrUsernameAlreadyExists) || errors.Is(err, internal.ErrEmailAlreadyExists) {
 		errorResponse(w, err.Error(), http.StatusBadRequest)

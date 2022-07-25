@@ -1,43 +1,97 @@
 package services
 
 import (
+	"context"
+	"errors"
+	"strings"
+
 	"github.com/marius004/phoenix/entities"
 	"github.com/marius004/phoenix/internal"
 	"github.com/marius004/phoenix/models"
+	"gorm.io/gorm"
 )
 
 type SubmissionService struct {
-	submissionRepository internal.SubmissionRepository
+	db *internal.Database
 }
 
-func (s *SubmissionService) CreateSubmission(submission *entities.Submission) error {
-	return s.submissionRepository.CreateSubmission(submission)
+func (s *SubmissionService) CreateSubmission(context context.Context, submission *entities.Submission) error {
+	result := s.db.Conn.Create(&submission)
+	return result.Error
 }
 
-func (s *SubmissionService) GetSubmissionByID(submissionId uint) (*entities.Submission, error) {
-	return s.submissionRepository.GetSubmissionByID(submissionId)
+func (s *SubmissionService) GetSubmissionByID(context context.Context, submissionId uint) (*entities.Submission, error) {
+	var submission *entities.Submission
+	result := s.db.Conn.Where("id = ?", submissionId).First(&submission)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return submission, result.Error
 }
 
-func (s *SubmissionService) GetSubmissionByUserID(userId uint) (*entities.Submission, error) {
-	return s.submissionRepository.GetSubmissionByUserID(userId)
+func (s *SubmissionService) GetSubmissionByUserID(context context.Context, userId uint) (*entities.Submission, error) {
+	var submission *entities.Submission
+	result := s.db.Conn.Where("user_id = ?", userId).First(&submission)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return submission, result.Error
 }
 
-func (s *SubmissionService) GetSubmissionByUsername(username string) (*entities.Submission, error) {
-	return s.submissionRepository.GetSubmissionByUsername(username)
+func (s *SubmissionService) GetAllSubmissions(context context.Context) ([]*entities.Submission, error) {
+	var submissions []*entities.Submission
+	result := s.db.Conn.Order("id desc").Find(&submissions)
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return submissions, result.Error
 }
 
-func (s *SubmissionService) GetAllSubmissions() ([]*entities.Submission, error) {
-	return s.submissionRepository.GetAllSubmissions()
+func (s *SubmissionService) GetBySubmissionFilter(context context.Context, filter models.SubmissionFilter) ([]*entities.Submission, error) {
+	var submissions []*entities.Submission
+	query, args := makeSubmissionFilter(filter)
+
+	var result *gorm.DB
+
+	if filter.Limit <= 0 && filter.Offset <= 0 {
+		result = s.db.Conn.Order("id desc").Where(strings.Join(query, " AND "), args...).Find(&submissions)
+	} else if filter.Limit >= 0 && filter.Offset >= 0 {
+		result = s.db.Conn.Order("id desc").Where(strings.Join(query, " AND "), args...).Offset(filter.Offset).Limit(filter.Limit).Find(&submissions)
+	} else if filter.Limit >= 0 {
+		result = s.db.Conn.Order("id desc").Where(strings.Join(query, " AND "), args...).Limit(filter.Limit).Find(&submissions)
+	} else {
+		result = s.db.Conn.Order("id desc").Where(strings.Join(query, " AND "), args...).Offset(filter.Offset).Find(&submissions)
+	}
+
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return submissions, result.Error
 }
 
-func (s *SubmissionService) GetBySubmissionFilter(filter models.SubmissionFilter) ([]*entities.Submission, error) {
-	return s.submissionRepository.GetBySubmissionFilter(filter)
+func (s *SubmissionService) UpdateSubmission(context context.Context, submissionId uint, request *models.UpdateSubmissionRequest) error {
+	submission, err := s.GetSubmissionByID(context, submissionId)
+
+	if err != nil {
+		return internal.ErrSubmissionDoesNotExist
+	}
+
+	submission.Score = request.Score
+	submission.Status = request.Status
+	submission.Message = request.Message
+	submission.CompiledSuccesfully = request.CompiledSuccesfully
+
+	result := s.db.Conn.Save(&submission)
+	return result.Error
 }
 
-func (s *SubmissionService) UpdateSubmission(submissionId uint, request *models.UpdateSubmissionRequest) error {
-	return s.submissionRepository.UpdateSubmission(submissionId, request)
-}
-
-func NewSubmissionService(submissionRepository internal.SubmissionRepository) *SubmissionService {
-	return &SubmissionService{submissionRepository}
+func NewSubmissionService(db *internal.Database) *SubmissionService {
+	return &SubmissionService{db}
 }
