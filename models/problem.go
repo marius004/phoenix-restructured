@@ -5,19 +5,14 @@ import (
 	"github.com/marius004/phoenix/entities"
 )
 
-const (
-	Easy    = "easy"
-	Medium  = "medium"
-	Hard    = "hard"
-	Contest = "contest"
-)
+var difficulties = []string{entities.Easy, entities.Medium, entities.Hard, entities.Contest}
 
 var (
 	problemNameValidation        = []validation.Rule{validation.Required, validation.Length(3, 20)}
 	problemTimeLimitValidation   = []validation.Rule{validation.Required, validation.Min(0.0), validation.Max(2.0)}
 	problemMemoryLimitValidation = []validation.Rule{validation.Required, validation.Min(0), validation.Max(65537)}
 	problemStackLimitValidation  = []validation.Rule{validation.Required, validation.Min(0), validation.Max(16384)}
-	problemDifficultyValidation  = []validation.Rule{validation.Required, validation.In(Easy, Medium, Hard, Contest)}
+	problemDifficultyValidation  = []validation.Rule{validation.Required, validation.In(difficulties)}
 )
 
 type ProblemFilter struct {
@@ -26,6 +21,10 @@ type ProblemFilter struct {
 
 	Limit  int
 	Offset int
+}
+
+type UpdateProblemStatusResponse struct {
+	Message string
 }
 
 type CreateProblemRequest struct {
@@ -76,5 +75,11 @@ func NewProblem(request CreateProblemRequest, authorId uint) *entities.Problem {
 		TimeLimit:   request.TimeLimit,
 		MemoryLimit: request.MemoryLimit,
 		StackLimit:  request.StackLimit,
+	}
+}
+
+func NewUpdateProblemStatusResponse(message string) *UpdateProblemStatusResponse {
+	return &UpdateProblemStatusResponse{
+		Message: message,
 	}
 }

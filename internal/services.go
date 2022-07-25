@@ -39,6 +39,7 @@ type ProblemService interface {
 	GetProblemsByFilter(context context.Context, filter *models.ProblemFilter) ([]*entities.Problem, error)
 
 	UpdateProblemByID(context context.Context, id uint, user *entities.User, request *models.UpdateProblemRequest) error
+	UpdateProblemStatus(context context.Context, problem *entities.Problem, status entities.ProblemStatus) error
 
 	DeleteProblem(context context.Context, problem *entities.Problem) error
 }

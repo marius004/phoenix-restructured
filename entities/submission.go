@@ -26,11 +26,11 @@ type Submission struct {
 	gorm.Model
 
 	Score      int                 `gorm:"default:0"`
-	Language   ProgrammingLanguage `gorm:"default:"c++""`
+	Language   ProgrammingLanguage `gorm:"default:c"`
 	SourceCode []byte
 
 	Status              SubmissionStatus `gorm:"default:waiting"`
-	CompiledSuccesfully *bool            `gorm:"default:"null""`
+	CompiledSuccesfully *bool            `gorm:"default:null"`
 
 	Message            string `gorm:"default:"""`
 	CompilationMessage string

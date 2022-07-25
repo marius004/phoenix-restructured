@@ -36,17 +36,23 @@ func (api *API) Routes() http.Handler {
 
 		r.With(api.problemCtx).Route("/{problemName}", func(r chi.Router) {
 			r.Get("/", api.getProblemByName)
-			r.With(api.mustBeProposer).Put("/", api.updateProblemByName)
-			r.With(api.mustBeProposer).Delete("/", api.deleteProblem)
 
-			r.Route("/tests", func(r chi.Router) {
-				r.With(api.mustBeProposer).Get("/", api.getProblemTests)
-				r.With(api.mustBeProposer).Post("/", api.createProblemTest)
+			r.With(api.mustBeProposer).Route("/", func(r chi.Router) {
+				r.Put("/", api.updateProblemByName)
+				r.Delete("/", api.deleteProblem)
 
-				r.With(api.problemTestCtx).Route("/{problemTestId}", func(r chi.Router) {
-					r.With(api.mustBeProposer).Get("/", api.getProblemTestByID)
-					r.With(api.mustBeProposer).Put("/", api.updateProblemTestById)
-					r.With(api.mustBeProposer).Delete("/", api.deleteProblemTestById)
+				r.Post("/publish", api.publishProblem)
+				r.Post("/unpublish", api.unpublishProblem)
+
+				r.Route("/tests", func(r chi.Router) {
+					r.Get("/", api.getProblemTests)
+					r.Post("/", api.createProblemTest)
+
+					r.With(api.problemTestCtx).Route("/{problemTestId}", func(r chi.Router) {
+						r.Get("/", api.getProblemTestByID)
+						r.Put("/", api.updateProblemTestById)
+						r.Delete("/", api.deleteProblemTestById)
+					})
 				})
 			})
 		})

@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"strconv"
 
+	"github.com/marius004/phoenix/entities"
 	"github.com/marius004/phoenix/internal"
 	"github.com/marius004/phoenix/models"
 )
@@ -120,6 +121,51 @@ func (api *API) deleteProblem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	emptyResponse(w, http.StatusOK)
+}
+
+func (api *API) publishProblem(w http.ResponseWriter, r *http.Request) {
+	user := userFromRequestContext(r.Context())
+	problem := problemFromRequestContext(r.Context())
+
+	if !api.canManageProblem(problem, user) {
+		errorResponse(w, internal.ErrUnauthorized.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	var status entities.ProblemStatus
+	if internal.IsUserAdmin(user) {
+		status = entities.Published
+	} else { // proposer
+		status = entities.WaitingForApproval
+	}
+
+	if err := api.services.ProblemService.UpdateProblemStatus(r.Context(), problem, status); err != nil {
+		errorResponse(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if status == entities.Published {
+		okResponse(w, models.NewUpdateProblemStatusResponse("Problem published succesfully"), http.StatusOK)
+	} else {
+		okResponse(w, models.NewUpdateProblemStatusResponse("Problem waiting for admin approval"), http.StatusOK)
+	}
+}
+
+func (api *API) unpublishProblem(w http.ResponseWriter, r *http.Request) {
+	user := userFromRequestContext(r.Context())
+	problem := problemFromRequestContext(r.Context())
+
+	if !api.canManageProblem(problem, user) {
+		errorResponse(w, internal.ErrUnauthorized.Error(), http.StatusUnauthorized)
+		return
+	}
+
+	if err := api.services.ProblemService.UpdateProblemStatus(r.Context(), problem, entities.UnPublished); err != nil {
+		errorResponse(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	okResponse(w, models.NewUpdateProblemStatusResponse("Problem unpublished succesfully"), http.StatusOK)
 }
 
 func (api *API) parseProblemFilter(url *url.URL) *models.ProblemFilter {

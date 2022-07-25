@@ -2,6 +2,22 @@ package entities
 
 import "gorm.io/gorm"
 
+// problem difficulty
+const (
+	Easy    = "easy"
+	Medium  = "medium"
+	Hard    = "hard"
+	Contest = "contest"
+)
+
+type ProblemStatus string
+
+const (
+	UnPublished        = ProblemStatus("unpublished")
+	WaitingForApproval = ProblemStatus("waiting for approval")
+	Published          = ProblemStatus("published")
+)
+
 type Problem struct {
 	gorm.Model
 
@@ -9,7 +25,7 @@ type Problem struct {
 	Description string
 	Difficulty  string
 
-	Visible  bool
+	Status   ProblemStatus `gorm:"default:unpublished"`
 	AuthorId uint
 
 	TimeLimit   float32

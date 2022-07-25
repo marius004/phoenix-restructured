@@ -120,6 +120,13 @@ func (s *ProblemService) DeleteProblem(context context.Context, problem *entitie
 	return result.Error
 }
 
+func (s *ProblemService) UpdateProblemStatus(context context.Context, problem *entities.Problem, status entities.ProblemStatus) error {
+	problem.Status = status
+
+	result := s.db.Conn.Save(&problem)
+	return result.Error
+}
+
 func NewProblemService(db *internal.Database) *ProblemService {
 	return &ProblemService{
 		db: db,
