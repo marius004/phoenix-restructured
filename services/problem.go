@@ -43,6 +43,10 @@ func (s *ProblemService) GetProblemByName(context context.Context, name string) 
 		return nil, nil
 	}
 
+	if user := internal.UserFromContext(context); !internal.CanManageProblem(problem, user) {
+		return nil, nil
+	}
+
 	return problem, result.Error
 }
 
