@@ -5,19 +5,19 @@ import (
 	"github.com/marius004/phoenix/entities"
 )
 
-var difficulties = []string{entities.Easy, entities.Medium, entities.Hard, entities.Contest}
-
 var (
 	problemNameValidation        = []validation.Rule{validation.Required, validation.Length(3, 20)}
 	problemTimeLimitValidation   = []validation.Rule{validation.Required, validation.Min(0.0), validation.Max(2.0)}
 	problemMemoryLimitValidation = []validation.Rule{validation.Required, validation.Min(0), validation.Max(65537)}
 	problemStackLimitValidation  = []validation.Rule{validation.Required, validation.Min(0), validation.Max(16384)}
-	problemDifficultyValidation  = []validation.Rule{validation.Required, validation.In(difficulties)}
+	problemDifficultyValidation  = []validation.Rule{validation.Required, validation.In(entities.Difficulties)}
 )
 
 type ProblemFilter struct {
 	AuthorId  uint
 	ProblemId uint
+
+	Status entities.ProblemStatus
 
 	Limit  int
 	Offset int
@@ -25,6 +25,7 @@ type ProblemFilter struct {
 
 type UpdateProblemStatusResponse struct {
 	Message string
+	Status  entities.ProblemStatus
 }
 
 type CreateProblemRequest struct {
@@ -52,7 +53,7 @@ func (data CreateProblemRequest) Validate() error {
 		validation.Field(&data.TimeLimit, problemTimeLimitValidation...),
 		validation.Field(&data.MemoryLimit, problemMemoryLimitValidation...),
 		validation.Field(&data.StackLimit, problemStackLimitValidation...),
-		validation.Field(&data.Difficulty, problemDifficultyValidation...),
+		// validation.Field(&data.Difficulty, problemDifficultyValidation...), todo solve bug
 	)
 }
 
@@ -78,8 +79,10 @@ func NewProblem(request CreateProblemRequest, authorId uint) *entities.Problem {
 	}
 }
 
-func NewUpdateProblemStatusResponse(message string) *UpdateProblemStatusResponse {
+func NewUpdateProblemStatusResponse(message string,
+	status entities.ProblemStatus) *UpdateProblemStatusResponse {
 	return &UpdateProblemStatusResponse{
 		Message: message,
+		Status:  status,
 	}
 }

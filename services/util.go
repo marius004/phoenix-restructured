@@ -13,6 +13,11 @@ func makeProblemFilter(filter *models.ProblemFilter) (query []string, args []int
 		args = append(args, filter.ProblemId)
 	}
 
+	if filter.Status != "" {
+		query = append(query, "status = ?")
+		args = append(args, filter.Status)
+	}
+
 	return
 }
 

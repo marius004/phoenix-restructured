@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
 	"strconv"
 
 	"github.com/marius004/phoenix/entities"
@@ -14,7 +13,8 @@ import (
 )
 
 func (api *API) getProblems(w http.ResponseWriter, r *http.Request) {
-	filter := api.parseProblemFilter(r.URL)
+	filter := api.parseProblemFilter(r)
+
 	problems, err := api.services.ProblemService.GetProblemsByFilter(r.Context(), filter)
 
 	if err != nil {
@@ -168,7 +168,8 @@ func (api *API) unpublishProblem(w http.ResponseWriter, r *http.Request) {
 	okResponse(w, models.NewUpdateProblemStatusResponse("Problem unpublished succesfully", entities.UnPublished), http.StatusOK)
 }
 
-func (api *API) parseProblemFilter(url *url.URL) *models.ProblemFilter {
+func (api *API) parseProblemFilter(r *http.Request) *models.ProblemFilter {
+	url := r.URL
 	ret := models.ProblemFilter{}
 
 	if v, ok := url.Query()["authorId"]; ok {
@@ -190,9 +191,12 @@ func (api *API) parseProblemFilter(url *url.URL) *models.ProblemFilter {
 	if v, ok := url.Query()["status"]; ok {
 		if status := entities.ProblemStatus(v[0]); status.IsValid() {
 			ret.Status = status
-		} else {
-			ret.Status = entities.Published
 		}
+	}
+
+	// overwrite the filter values
+	if user := internal.UserFromContext(r.Context()); !internal.IsUserProposer(user) {
+		ret.Status = entities.Published
 	}
 
 	return &ret

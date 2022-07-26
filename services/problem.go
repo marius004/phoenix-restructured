@@ -77,6 +77,20 @@ func (s *ProblemService) GetProblemsByFilter(context context.Context, filter *mo
 		return nil, nil
 	}
 
+	if user := internal.UserFromContext(context); internal.IsUserProposer(user) && filter.Status != entities.Published {
+		var filteredProblems []*entities.Problem
+
+		for _, prb := range problems {
+			if prb.Status == entities.Published {
+				filteredProblems = append(filteredProblems, prb)
+			} else if prb.AuthorId == user.ID {
+				filteredProblems = append(filteredProblems, prb)
+			}
+		}
+
+		problems = filteredProblems
+	}
+
 	return problems, result.Error
 }
 

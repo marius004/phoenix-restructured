@@ -2,7 +2,6 @@ package entities
 
 import "gorm.io/gorm"
 
-// problem difficulty
 const (
 	Easy    = "easy"
 	Medium  = "medium"
@@ -10,7 +9,15 @@ const (
 	Contest = "contest"
 )
 
+var Difficulties = []string{Easy, Medium, Hard, Contest}
+
 type ProblemStatus string
+
+func (status ProblemStatus) IsValid() bool {
+	return status == UnPublished ||
+		status == WaitingForApproval ||
+		status == Published
+}
 
 const (
 	UnPublished        = ProblemStatus("unpublished")
@@ -23,7 +30,7 @@ type Problem struct {
 
 	Name        string `gorm:"unique"`
 	Description string
-	Difficulty  string
+	Difficulty  string `gorm:"default:easy"`
 
 	Status   ProblemStatus `gorm:"default:unpublished"`
 	AuthorId uint
