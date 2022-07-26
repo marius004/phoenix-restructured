@@ -45,7 +45,7 @@ func (api *API) jwtMiddleware(next http.Handler) http.Handler {
 				return
 			}
 
-			ctx := context.WithValue(r.Context(), userContextKey, user)
+			ctx := context.WithValue(r.Context(), internal.UserContextKey, user)
 			next.ServeHTTP(w, r.WithContext(ctx))
 
 			return
@@ -65,14 +65,14 @@ func (api *API) problemCtx(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), problemContextKey, problem)
+		ctx := context.WithValue(r.Context(), internal.ProblemContextKey, problem)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
 func (api *API) problemTestCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id, _ := convertStringToUint(chi.URLParam(r, "problemTestId"))
+		id, _ := internal.ConvertStringToUint(chi.URLParam(r, "problemTestId"))
 		problemTest, err := api.services.ProblemTestService.GetProblemTestByID(r.Context(), id)
 
 		if err != nil || problemTest == nil {
@@ -80,14 +80,14 @@ func (api *API) problemTestCtx(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), problemTestContextKey, problemTest)
+		ctx := context.WithValue(r.Context(), internal.ProblemTestContextKey, problemTest)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
 func (api *API) submissionCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		id, _ := convertStringToUint(chi.URLParam(r, "submissionId"))
+		id, _ := internal.ConvertStringToUint(chi.URLParam(r, "submissionId"))
 		submission, err := api.services.SubmissionService.GetSubmissionByID(r.Context(), id)
 
 		if err != nil || submission == nil {
@@ -95,14 +95,14 @@ func (api *API) submissionCtx(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), submissionContextKey, submission)
+		ctx := context.WithValue(r.Context(), internal.SubmissionContextKey, submission)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
 func (api *API) mustBeAuthed(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if user := userFromRequestContext(r.Context()); !internal.IsUserAuthed(user) {
+		if user := internal.UserFromContext(r.Context()); !internal.IsUserAuthed(user) {
 			errorResponse(w, internal.ErrUnauthorized.Error(), http.StatusUnauthorized)
 			return
 		}
@@ -113,7 +113,7 @@ func (api *API) mustBeAuthed(next http.Handler) http.Handler {
 
 func (api *API) mustNotBeAuthed(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if user := userFromRequestContext(r.Context()); internal.IsUserAuthed(user) {
+		if user := internal.UserFromContext(r.Context()); internal.IsUserAuthed(user) {
 			errorResponse(w, internal.ErrMustNotBeAuthed.Error(), http.StatusUnauthorized)
 			return
 		}
@@ -124,7 +124,7 @@ func (api *API) mustNotBeAuthed(next http.Handler) http.Handler {
 
 func (api *API) mustBeAdmin(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if user := userFromRequestContext(r.Context()); !internal.IsUserAdmin(user) {
+		if user := internal.UserFromContext(r.Context()); !internal.IsUserAdmin(user) {
 			errorResponse(w, internal.ErrMustBeAdmin.Error(), http.StatusUnauthorized)
 			return
 		}
@@ -135,7 +135,7 @@ func (api *API) mustBeAdmin(next http.Handler) http.Handler {
 
 func (api *API) mustBeProposer(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if user := userFromRequestContext(r.Context()); !internal.IsUserProposer(user) {
+		if user := internal.UserFromContext(r.Context()); !internal.IsUserProposer(user) {
 			errorResponse(w, internal.ErrMustBeProposer.Error(), http.StatusUnauthorized)
 			return
 		}

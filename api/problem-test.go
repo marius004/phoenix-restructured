@@ -10,7 +10,7 @@ import (
 )
 
 func (api *API) getProblemTests(w http.ResponseWriter, r *http.Request) {
-	problem := problemFromRequestContext(r.Context())
+	problem := internal.ProblemFromContext(r.Context())
 	tests, err := api.services.ProblemTestService.GetProblemTestsByProblemID(r.Context(), problem.ID)
 
 	if err != nil {
@@ -22,25 +22,25 @@ func (api *API) getProblemTests(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) getProblemTestByID(w http.ResponseWriter, r *http.Request) {
-	user := userFromRequestContext(r.Context())
-	problem := problemFromRequestContext(r.Context())
+	user := internal.UserFromContext(r.Context())
+	problem := internal.ProblemFromContext(r.Context())
 
-	if !api.canManageProblem(problem, user) {
+	if !internal.CanManageProblem(problem, user) {
 		errorResponse(w, internal.ErrUnauthorized.Error(), http.StatusUnauthorized)
 		return
 	}
 
-	problemTest := problemTestFromRequestContext(r.Context())
+	problemTest := internal.ProblemTestFromContext(r.Context())
 	okResponse(w, problemTest, http.StatusOK)
 }
 
 func (api *API) updateProblemTestById(w http.ResponseWriter, r *http.Request) {
-	user := userFromRequestContext(r.Context())
+	user := internal.UserFromContext(r.Context())
 
-	problem := problemFromRequestContext(r.Context())
-	problemTest := problemTestFromRequestContext(r.Context())
+	problem := internal.ProblemFromContext(r.Context())
+	problemTest := internal.ProblemTestFromContext(r.Context())
 
-	if !api.canManageProblem(problem, user) {
+	if !internal.CanManageProblem(problem, user) {
 		errorResponse(w, internal.ErrUnauthorized.Error(), http.StatusUnauthorized)
 		return
 	}
@@ -68,12 +68,12 @@ func (api *API) updateProblemTestById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) deleteProblemTestById(w http.ResponseWriter, r *http.Request) {
-	user := userFromRequestContext(r.Context())
+	user := internal.UserFromContext(r.Context())
 
-	problem := problemFromRequestContext(r.Context())
-	problemTest := problemTestFromRequestContext(r.Context())
+	problem := internal.ProblemFromContext(r.Context())
+	problemTest := internal.ProblemTestFromContext(r.Context())
 
-	if !api.canManageProblem(problem, user) {
+	if !internal.CanManageProblem(problem, user) {
 		errorResponse(w, internal.ErrUnauthorized.Error(), http.StatusUnauthorized)
 		return
 	}
@@ -87,8 +87,8 @@ func (api *API) deleteProblemTestById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) createProblemTest(w http.ResponseWriter, r *http.Request) {
-	problem := problemFromRequestContext(r.Context())
-	user := userFromRequestContext(r.Context())
+	problem := internal.ProblemFromContext(r.Context())
+	user := internal.UserFromContext(r.Context())
 
 	jsonDecoder := json.NewDecoder(r.Body)
 	jsonDecoder.DisallowUnknownFields()
@@ -99,7 +99,7 @@ func (api *API) createProblemTest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !api.canManageProblem(problem, user) {
+	if !internal.CanManageProblem(problem, user) {
 		errorResponse(w, internal.ErrUnauthorized.Error(), http.StatusUnauthorized)
 		return
 	}

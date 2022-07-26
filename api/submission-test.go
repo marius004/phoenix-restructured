@@ -1,9 +1,13 @@
 package api
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/marius004/phoenix/internal"
+)
 
 func (api *API) getSubmissionTests(w http.ResponseWriter, r *http.Request) {
-	submission := submissionFromRequestContext(r.Context())
+	submission := internal.SubmissionFromContext(r.Context())
 	submissionTests, err := api.services.SubmissionTestService.GetSubmissionTestsBySubmissionID(r.Context(), submission.ID)
 
 	if err != nil {

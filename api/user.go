@@ -43,7 +43,7 @@ func (api *API) getUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) updateUser(w http.ResponseWriter, r *http.Request) {
-	user := userFromRequestContext(r.Context())
+	user := internal.UserFromContext(r.Context())
 
 	var data models.UpdateUserRequest
 

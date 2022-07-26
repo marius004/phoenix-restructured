@@ -23,12 +23,12 @@ func (api *API) getSubmissions(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) getSubmissionById(w http.ResponseWriter, r *http.Request) {
-	submission := submissionFromRequestContext(r.Context())
+	submission := internal.SubmissionFromContext(r.Context())
 	okResponse(w, submission, http.StatusOK)
 }
 
 func (api *API) createSubmission(w http.ResponseWriter, r *http.Request) {
-	user := userFromRequestContext(r.Context())
+	user := internal.UserFromContext(r.Context())
 	var data models.CreateSubmissionRequest
 
 	jsonDecoder := json.NewDecoder(r.Body)

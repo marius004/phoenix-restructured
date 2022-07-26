@@ -27,7 +27,7 @@ func (api *API) getProblems(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) getProblemByName(w http.ResponseWriter, r *http.Request) {
-	problem := problemFromRequestContext(r.Context())
+	problem := internal.ProblemFromContext(r.Context())
 
 	if problem == nil {
 		errorResponse(w, internal.ErrProblemDoesNotExist.Error(), http.StatusNotFound)
@@ -53,7 +53,7 @@ func (api *API) createProblem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	author := userFromRequestContext(r.Context())
+	author := internal.UserFromContext(r.Context())
 	problem := models.NewProblem(data, author.ID)
 	err := api.services.ProblemService.CreateProblem(r.Context(), problem)
 
@@ -69,8 +69,8 @@ func (api *API) createProblem(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) updateProblemByName(w http.ResponseWriter, r *http.Request) {
-	problem := problemFromRequestContext(r.Context())
-	user := userFromRequestContext(r.Context())
+	problem := internal.ProblemFromContext(r.Context())
+	user := internal.UserFromContext(r.Context())
 
 	var data *models.UpdateProblemRequest
 
@@ -82,7 +82,7 @@ func (api *API) updateProblemByName(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !api.canManageProblem(problem, user) {
+	if !internal.CanManageProblem(problem, user) {
 		emptyResponse(w, http.StatusUnauthorized)
 		return
 	}
@@ -107,10 +107,10 @@ func (api *API) updateProblemByName(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) deleteProblem(w http.ResponseWriter, r *http.Request) {
-	problem := problemFromRequestContext(r.Context())
-	user := userFromRequestContext(r.Context())
+	problem := internal.ProblemFromContext(r.Context())
+	user := internal.UserFromContext(r.Context())
 
-	if !api.canManageProblem(problem, user) {
+	if !internal.CanManageProblem(problem, user) {
 		emptyResponse(w, http.StatusUnauthorized)
 		return
 	}
@@ -124,10 +124,10 @@ func (api *API) deleteProblem(w http.ResponseWriter, r *http.Request) {
 }
 
 func (api *API) publishProblem(w http.ResponseWriter, r *http.Request) {
-	user := userFromRequestContext(r.Context())
-	problem := problemFromRequestContext(r.Context())
+	user := internal.UserFromContext(r.Context())
+	problem := internal.ProblemFromContext(r.Context())
 
-	if !api.canManageProblem(problem, user) {
+	if !internal.CanManageProblem(problem, user) {
 		errorResponse(w, internal.ErrUnauthorized.Error(), http.StatusUnauthorized)
 		return
 	}
@@ -145,17 +145,17 @@ func (api *API) publishProblem(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if status == entities.Published {
-		okResponse(w, models.NewUpdateProblemStatusResponse("Problem published succesfully"), http.StatusOK)
+		okResponse(w, models.NewUpdateProblemStatusResponse("Problem published succesfully", status), http.StatusOK)
 	} else {
-		okResponse(w, models.NewUpdateProblemStatusResponse("Problem waiting for admin approval"), http.StatusOK)
+		okResponse(w, models.NewUpdateProblemStatusResponse("Problem waiting for admin approval", status), http.StatusOK)
 	}
 }
 
 func (api *API) unpublishProblem(w http.ResponseWriter, r *http.Request) {
-	user := userFromRequestContext(r.Context())
-	problem := problemFromRequestContext(r.Context())
+	user := internal.UserFromContext(r.Context())
+	problem := internal.ProblemFromContext(r.Context())
 
-	if !api.canManageProblem(problem, user) {
+	if !internal.CanManageProblem(problem, user) {
 		errorResponse(w, internal.ErrUnauthorized.Error(), http.StatusUnauthorized)
 		return
 	}
@@ -165,7 +165,7 @@ func (api *API) unpublishProblem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	okResponse(w, models.NewUpdateProblemStatusResponse("Problem unpublished succesfully"), http.StatusOK)
+	okResponse(w, models.NewUpdateProblemStatusResponse("Problem unpublished succesfully", entities.UnPublished), http.StatusOK)
 }
 
 func (api *API) parseProblemFilter(url *url.URL) *models.ProblemFilter {
@@ -184,6 +184,14 @@ func (api *API) parseProblemFilter(url *url.URL) *models.ProblemFilter {
 
 		if ret.Limit > 30 {
 			ret.Limit = 30
+		}
+	}
+
+	if v, ok := url.Query()["status"]; ok {
+		if status := entities.ProblemStatus(v[0]); status.IsValid() {
+			ret.Status = status
+		} else {
+			ret.Status = entities.Published
 		}
 	}
 
