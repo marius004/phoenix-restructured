@@ -125,3 +125,25 @@ func RenameDirectory(old, new string) error {
 func DeleteFile(path string) error {
 	return os.Remove(path)
 }
+
+func ConvertStringToUint(s string) (uint, error) {
+	res, err := strconv.Atoi(s)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return uint(res), nil
+}
+
+func CanManageProblem(problem *entities.Problem, user *entities.User) bool {
+	if problem == nil {
+		return false
+	}
+
+	if (IsUserProposer(user) && problem.AuthorId == user.ID) || IsUserAdmin(user) {
+		return true
+	}
+
+	return false
+}
