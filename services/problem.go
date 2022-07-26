@@ -79,11 +79,12 @@ func (s *ProblemService) GetProblemsByFilter(context context.Context, filter *mo
 
 	if user := internal.UserFromContext(context); internal.IsUserProposer(user) && filter.Status != entities.Published {
 		var filteredProblems []*entities.Problem
+		isAdmin := internal.IsUserAdmin(user)
 
 		for _, prb := range problems {
 			if prb.Status == entities.Published {
 				filteredProblems = append(filteredProblems, prb)
-			} else if prb.AuthorId == user.ID {
+			} else if prb.AuthorId == user.ID || isAdmin {
 				filteredProblems = append(filteredProblems, prb)
 			}
 		}
