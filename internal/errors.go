@@ -8,6 +8,7 @@ var (
 
 	ErrCouldNotUpdateUser = errors.New("could not update user data")
 	ErrCouldNotUpdatePost = errors.New("could not update post")
+	ErrCouldNotAssignRole = errors.New("could not assign role")
 
 	ErrInvalidPassword       = errors.New("invalid username or password")
 	ErrUsernameAlreadyExists = errors.New("username already exists")

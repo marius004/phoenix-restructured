@@ -68,6 +68,24 @@ func (api *API) updateUser(w http.ResponseWriter, r *http.Request) {
 	emptyResponse(w, http.StatusOK)
 }
 
+func (api *API) assignProposerRole(w http.ResponseWriter, r *http.Request) {
+	value, err := strconv.ParseBool(chi.URLParam(r, "value"))
+	username := chi.URLParam(r, "username")
+
+	if err != nil {
+		errorResponse(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err = api.services.UserService.AssignProposerRole(r.Context(), username, value)
+	if err != nil {
+		errorResponse(w, internal.ErrCouldNotAssignRole.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	emptyResponse(w, http.StatusOK)
+}
+
 func (api *API) parseUserFilter(r *http.Request) *models.UserFilter {
 	ret := models.UserFilter{}
 

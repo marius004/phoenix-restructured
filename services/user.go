@@ -117,6 +117,18 @@ func (s *UserService) DeleteUser(context context.Context, user *entities.User) e
 	return result.Error
 }
 
+func (s *UserService) AssignProposerRole(context context.Context, username string, action bool) error {
+	user, err := s.GetUserByUsername(context, username)
+	if err != nil {
+		return err
+	}
+
+	user.IsProposer = action
+
+	result := s.db.Conn.Save(&user)
+	return result.Error
+}
+
 func NewUserService(db *internal.Database) *UserService {
 	return &UserService{db}
 }

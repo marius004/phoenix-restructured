@@ -28,6 +28,8 @@ type UserService interface {
 	UpdateUser(context context.Context, user *entities.User, request *models.UpdateUserRequest) error
 
 	DeleteUser(context context.Context, user *entities.User) error
+
+	AssignProposerRole(context context.Context, username string, action bool) error
 }
 
 type ProblemService interface {
