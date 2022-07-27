@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -43,4 +44,14 @@ func (api *API) deleteAuthCookie(w http.ResponseWriter) {
 	}
 
 	http.SetCookie(w, cookie)
+}
+
+func parseStringToUnsignedInt(s string) uint {
+	value, err := strconv.Atoi(s)
+
+	if err != nil {
+		return 0
+	}
+
+	return uint(value)
 }

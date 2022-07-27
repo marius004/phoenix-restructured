@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/marius004/phoenix/entities"
 	"github.com/marius004/phoenix/internal"
@@ -200,14 +199,4 @@ func (api *API) parseProblemFilter(r *http.Request) *models.ProblemFilter {
 	}
 
 	return &ret
-}
-
-func parseStringToUnsignedInt(s string) uint {
-	value, err := strconv.Atoi(s)
-
-	if err != nil {
-		return 0
-	}
-
-	return uint(value)
 }
