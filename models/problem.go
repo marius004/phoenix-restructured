@@ -10,7 +10,7 @@ var (
 	problemTimeLimitValidation   = []validation.Rule{validation.Required, validation.Min(0.0), validation.Max(2.0)}
 	problemMemoryLimitValidation = []validation.Rule{validation.Required, validation.Min(0), validation.Max(65537)}
 	problemStackLimitValidation  = []validation.Rule{validation.Required, validation.Min(0), validation.Max(16384)}
-	problemDifficultyValidation  = []validation.Rule{validation.Required, validation.In(entities.Difficulties)}
+	problemDifficultyValidation  = []validation.Rule{validation.Required, validation.In(entities.Difficulties...)}
 )
 
 type ProblemFilter struct {
@@ -53,7 +53,7 @@ func (data CreateProblemRequest) Validate() error {
 		validation.Field(&data.TimeLimit, problemTimeLimitValidation...),
 		validation.Field(&data.MemoryLimit, problemMemoryLimitValidation...),
 		validation.Field(&data.StackLimit, problemStackLimitValidation...),
-		// validation.Field(&data.Difficulty, problemDifficultyValidation...), todo solve bug
+		validation.Field(&data.Difficulty, problemDifficultyValidation...),
 	)
 }
 

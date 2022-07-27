@@ -9,7 +9,7 @@ const (
 	Contest = "contest"
 )
 
-var Difficulties = []string{Easy, Medium, Hard, Contest}
+var Difficulties = []interface{}{Easy, Medium, Hard, Contest}
 
 type ProblemStatus string
 
