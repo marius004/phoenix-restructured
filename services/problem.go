@@ -43,7 +43,7 @@ func (s *ProblemService) GetProblemByName(context context.Context, name string) 
 		return nil, nil
 	}
 
-	if user := internal.UserFromContext(context); !internal.CanManageProblem(problem, user) {
+	if user := internal.UserFromContext(context); !internal.CanManageProblem(problem, user) && problem.Status != entities.Published {
 		return nil, nil
 	}
 
