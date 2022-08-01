@@ -73,13 +73,13 @@ func NewServer(db *internal.Database, config *internal.Config, evalConfig *inter
 
 func createServices(db *internal.Database, config *internal.Config, evalConfig *internal.EvalConfig) *internal.Services {
 	var (
-		userService = services.NewUserService(db)
+		submissionService     = services.NewSubmissionService(db)
+		submissionTestService = services.NewSubmissionTestService(db)
 
 		problemService     = services.NewProblemService(db)
 		problemTestService = services.NewProblemTestService(db)
 
-		submissionService     = services.NewSubmissionService(db)
-		submissionTestService = services.NewSubmissionTestService(db)
+		userService = services.NewUserService(db, submissionService, problemService)
 
 		graderServices = internal.NewGraderServices(problemService, problemTestService, submissionService, submissionTestService)
 	)

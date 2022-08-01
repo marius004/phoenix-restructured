@@ -1,6 +1,14 @@
 package models
 
-import validation "github.com/go-ozzo/ozzo-validation"
+import (
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/marius004/phoenix/entities"
+)
+
+type UserStats struct {
+	ProblemCount int
+	Problems     []*entities.Problem
+}
 
 type UpdateUserRequest struct {
 	Bio string

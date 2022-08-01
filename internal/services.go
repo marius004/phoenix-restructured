@@ -24,6 +24,7 @@ type UserService interface {
 	GetUserByEmail(context context.Context, email string) (*entities.User, error)
 	GetUserByUsername(context context.Context, username string) (*entities.User, error)
 	GetUsers(context context.Context, filter *models.UserFilter) ([]*entities.User, error)
+	GetUserStats(context context.Context, user *entities.User) (*models.UserStats, error)
 
 	UpdateUser(context context.Context, user *entities.User, request *models.UpdateUserRequest) error
 
@@ -65,7 +66,7 @@ type SubmissionService interface {
 	GetAllSubmissions(context context.Context) ([]*entities.Submission, error)
 
 	GetSubmissionByID(context context.Context, submissionId uint) (*entities.Submission, error)
-	GetSubmissionByUserID(context context.Context, userId uint) (*entities.Submission, error)
+	GetSubmissionsByUserID(context context.Context, userId uint) ([]*entities.Submission, error)
 
 	UpdateSubmission(context context.Context, submissionId uint, request *models.UpdateSubmissionRequest) error
 }

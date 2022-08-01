@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/marius004/phoenix/entities"
@@ -13,6 +14,9 @@ import (
 
 type UserService struct {
 	db *internal.Database
+
+	submissionService internal.SubmissionService
+	problemService    internal.ProblemService
 }
 
 func (s *UserService) CreateUser(context context.Context, user *entities.User) error {
@@ -129,6 +133,84 @@ func (s *UserService) AssignProposerRole(context context.Context, username strin
 	return result.Error
 }
 
-func NewUserService(db *internal.Database) *UserService {
-	return &UserService{db}
+func (s *UserService) GetUserStats(context context.Context, user *entities.User) (*models.UserStats, error) {
+	filter := getUserStatsFilter(user)
+	submissions, err := s.submissionService.GetBySubmissionFilter(context, filter)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return s.computeUserStats(context, submissions), nil
+}
+
+func getUserStatsFilter(user *entities.User) models.SubmissionFilter {
+	return models.SubmissionFilter{
+		UserId: int(user.ID),
+		Score:  100,
+
+		ProblemId:           -1,
+		CompiledSuccesfully: nil,
+	}
+}
+
+func (s *UserService) computeUserStats(context context.Context, submissions []*entities.Submission) *models.UserStats {
+	var ret models.UserStats
+	cachedProblems := make(map[uint]*entities.Problem)
+
+	for _, submission := range submissions {
+		problem, err := s.getCachedProblem(context, cachedProblems, submission.ProblemId)
+
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+
+		if problem.Status != entities.Published {
+			continue
+		}
+
+		if shouldInsertProblemToStats(&ret, problem) {
+			ret.Problems = append(ret.Problems, problem)
+		}
+	}
+
+	ret.ProblemCount = len(ret.Problems)
+	return &ret
+}
+
+func (s *UserService) getCachedProblem(context context.Context, cachedProblems map[uint]*entities.Problem, problemId uint) (*entities.Problem, error) {
+	if cachedProblems[problemId] != nil {
+		return cachedProblems[problemId], nil
+	}
+
+	problem, err := s.problemService.GetProblemByID(context, problemId)
+	if err != nil {
+		return nil, err
+	}
+
+	cachedProblems[problemId] = problem
+	return cachedProblems[problemId], nil
+}
+
+// todo: use a set instead of always iterating over this array!
+func shouldInsertProblemToStats(stats *models.UserStats, problem *entities.Problem) bool {
+	for _, prb := range stats.Problems {
+		if prb.ID == problem.ID {
+			return false
+		}
+	}
+
+	return true
+}
+
+func NewUserService(db *internal.Database,
+	submissionService internal.SubmissionService,
+	problemService internal.ProblemService) *UserService {
+	return &UserService{
+		db: db,
+
+		submissionService: submissionService,
+		problemService:    problemService,
+	}
 }
