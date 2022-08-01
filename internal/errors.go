@@ -13,6 +13,7 @@ var (
 	ErrInvalidPassword       = errors.New("invalid username or password")
 	ErrUsernameAlreadyExists = errors.New("username already exists")
 	ErrUserNotFound          = errors.New("user does not exist")
+	ErrCouldNotGetUserStats  = errors.New("could not get user stats")
 
 	ErrProblemTestDoesNotExist    = errors.New("problem test does not exist")
 	ErrSubmissionDoesNotExist     = errors.New("submission does not exist")

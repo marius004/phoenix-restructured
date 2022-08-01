@@ -30,6 +30,24 @@ func (api *API) getUserByUsername(w http.ResponseWriter, r *http.Request) {
 	okResponse(w, user, http.StatusOK)
 }
 
+func (api *API) getUserStats(w http.ResponseWriter, r *http.Request) {
+	username := chi.URLParam(r, "username")
+	user, err := api.services.UserService.GetUserByUsername(r.Context(), username)
+
+	if err != nil {
+		errorResponse(w, internal.ErrUserNotFound.Error(), http.StatusNotFound)
+		return
+	}
+
+	stats, err := api.services.UserService.GetUserStats(r.Context(), user)
+	if err != nil {
+		errorResponse(w, internal.ErrCouldNotGetUserStats.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	okResponse(w, stats, http.StatusOK)
+}
+
 func (api *API) getUsers(w http.ResponseWriter, r *http.Request) {
 	filter := api.parseUserFilter(r)
 	users, err := api.services.UserService.GetUsers(r.Context(), filter)

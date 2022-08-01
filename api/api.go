@@ -30,6 +30,7 @@ func (api *API) Routes() http.Handler {
 
 		r.Route("/{username}", func(r chi.Router) {
 			r.Get("/", api.getUserByUsername)
+			r.Get("/stats", api.getUserStats)
 			r.With(api.mustBeAdmin).Post("/roles/proposer/{value}", api.assignProposerRole)
 		})
 	})

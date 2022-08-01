@@ -31,15 +31,15 @@ func (s *SubmissionService) GetSubmissionByID(context context.Context, submissio
 	return submission, result.Error
 }
 
-func (s *SubmissionService) GetSubmissionByUserID(context context.Context, userId uint) (*entities.Submission, error) {
-	var submission *entities.Submission
-	result := s.db.Conn.Where("user_id = ?", userId).First(&submission)
+func (s *SubmissionService) GetSubmissionsByUserID(context context.Context, userId uint) ([]*entities.Submission, error) {
+	var submissions []*entities.Submission
+	result := s.db.Conn.Where("user_id = ?", userId).Find(&submissions)
 
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, nil
 	}
 
-	return submission, result.Error
+	return submissions, result.Error
 }
 
 func (s *SubmissionService) GetAllSubmissions(context context.Context) ([]*entities.Submission, error) {
