@@ -59,3 +59,5 @@ SERVER_PORT=8080
 go mod download
 go run .
 ```
+## License
+This project is licensed under the MIT License - see the license.md file for details
