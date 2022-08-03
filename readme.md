@@ -25,7 +25,7 @@ on the correctitude and runtime performance of the submission.
 sudo apt-get update
 sudo apt-get install libcap-dev asciidoc-base
 cd ~/Downloads
-git clone https://github.com/marius004/isolate
+git clone https://github.com/phoenix-algo/isolate.git
 cd isolate
 make
 sudo make install
