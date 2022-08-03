@@ -13,9 +13,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/marius004/phoenix-algo/internal"
-	"github.com/marius004/phoenix-algo/models"
-	"github.com/marius004/phoenix-algo/services/eval"
+	"github.com/marius004/phoenix-/internal"
+	"github.com/marius004/phoenix-/models"
+	"github.com/marius004/phoenix-/services/eval"
 )
 
 type Sandbox struct {

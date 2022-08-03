@@ -3,8 +3,8 @@ package grader
 import (
 	"context"
 
-	"github.com/marius004/phoenix-algo/entities"
-	"github.com/marius004/phoenix-algo/models"
+	"github.com/marius004/phoenix-/entities"
+	"github.com/marius004/phoenix-/models"
 )
 
 var (

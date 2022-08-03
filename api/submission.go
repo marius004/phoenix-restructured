@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/marius004/phoenix-algo/entities"
-	"github.com/marius004/phoenix-algo/internal"
-	"github.com/marius004/phoenix-algo/models"
+	"github.com/marius004/phoenix-/entities"
+	"github.com/marius004/phoenix-/internal"
+	"github.com/marius004/phoenix-/models"
 )
 
 func (api *API) getSubmissions(w http.ResponseWriter, r *http.Request) {

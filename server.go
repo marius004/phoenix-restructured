@@ -8,11 +8,11 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
-	"github.com/marius004/phoenix-algo/api"
-	"github.com/marius004/phoenix-algo/entities"
-	"github.com/marius004/phoenix-algo/internal"
-	"github.com/marius004/phoenix-algo/services"
-	"github.com/marius004/phoenix-algo/services/eval/grader"
+	"github.com/marius004/phoenix-/api"
+	"github.com/marius004/phoenix-/entities"
+	"github.com/marius004/phoenix-/internal"
+	"github.com/marius004/phoenix-/services"
+	"github.com/marius004/phoenix-/services/eval/grader"
 )
 
 type Server struct {

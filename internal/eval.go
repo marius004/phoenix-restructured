@@ -6,8 +6,8 @@ import (
 	"io/fs"
 	"os"
 
-	"github.com/marius004/phoenix-algo/entities"
-	"github.com/marius004/phoenix-algo/models"
+	"github.com/marius004/phoenix-/entities"
+	"github.com/marius004/phoenix-/models"
 )
 
 // Sandbox is an isolated process where code is executed

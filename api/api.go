@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/marius004/phoenix-algo/internal"
+	"github.com/marius004/phoenix-/internal"
 )
 
 type API struct {
