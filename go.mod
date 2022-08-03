@@ -1,4 +1,4 @@
-module github.com/marius004/phoenix
+module github.com/marius004/phoenix-algo
 
 go 1.16
 

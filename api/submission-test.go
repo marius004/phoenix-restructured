@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/marius004/phoenix/internal"
+	"github.com/marius004/phoenix-algo/internal"
 )
 
 func (api *API) getSubmissionTests(w http.ResponseWriter, r *http.Request) {

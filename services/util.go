@@ -1,6 +1,6 @@
 package services
 
-import "github.com/marius004/phoenix/models"
+import "github.com/marius004/phoenix-algo/models"
 
 func makeProblemFilter(filter *models.ProblemFilter) (query []string, args []interface{}) {
 	if filter.AuthorId > 0 {

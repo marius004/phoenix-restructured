@@ -6,8 +6,8 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/marius004/phoenix/internal"
-	"github.com/marius004/phoenix/models"
+	"github.com/marius004/phoenix-algo/internal"
+	"github.com/marius004/phoenix-algo/models"
 )
 
 func (api *API) getUserByUsername(w http.ResponseWriter, r *http.Request) {

@@ -5,9 +5,9 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/marius004/phoenix/entities"
-	"github.com/marius004/phoenix/internal"
-	"github.com/marius004/phoenix/models"
+	"github.com/marius004/phoenix-algo/entities"
+	"github.com/marius004/phoenix-algo/internal"
+	"github.com/marius004/phoenix-algo/models"
 	"gorm.io/gorm"
 )
 

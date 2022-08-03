@@ -3,7 +3,7 @@ package sandbox
 import (
 	"context"
 
-	"github.com/marius004/phoenix/internal"
+	"github.com/marius004/phoenix-algo/internal"
 	"golang.org/x/sync/semaphore"
 )
 

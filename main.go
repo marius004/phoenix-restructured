@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/marius004/phoenix/internal"
+	"github.com/marius004/phoenix-algo/internal"
 )
 
 var evalConfigPath = "eval.config.json"

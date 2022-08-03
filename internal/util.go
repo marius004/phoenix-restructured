@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/marius004/phoenix/entities"
+	"github.com/marius004/phoenix-algo/entities"
 	"golang.org/x/crypto/bcrypt"
 )
 
