@@ -1,4 +1,4 @@
-# Phoenix [![Go Reference](https://pkg.go.dev/badge/github.com/marius004/phoenix-algo.svg)](https://pkg.go.dev/github.com/marius004/phoenix-algo) 
+# Phoenix [![Go Reference] 
 
 Phoenix is a work in progress platform for learning data structures and algoritms.
 
