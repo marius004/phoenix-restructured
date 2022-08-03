@@ -1,4 +1,4 @@
-# Phoenix [![Go Reference] 
+# Phoenix 
 
 Phoenix is a work in progress platform for learning data structures and algoritms.
 
