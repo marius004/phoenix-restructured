@@ -9,6 +9,8 @@ a complex code execution environment that allows users to run their source code 
 custom made tests. After each execution, the user receives a score from 0 to 100 based 
 on the correctitude and runtime performance of the submission. 
 
+<div align="center">[Click on the image for youtube video]</div>
+
 [![Phoenix](https://img.youtube.com/vi/WIkBiAFdZAc/maxresdefault.jpg)](https://www.youtube.com/watch?v=WIkBiAFdZAc)
 
 ## Getting Started
